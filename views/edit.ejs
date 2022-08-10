@@ -1,0 +1,14 @@
+<%- include('partials/header'); -%>
+<h1>Editing <%= space.title%></h1>
+<form action="/spaces/<%= space.id %>?_method=PUT" method="post">
+  <label for="name">Name </label>
+  <input type="text" name="name" id="" value="<%= space.title %>" />
+  <label for="city">City </label>
+  <input type="text" name="city" value="<%= locArr[0] %>" />
+  <label for="state">State </label>
+  <input type="text" name="state" value="<%= locArr[1] %>" />
+  <button type="submit">Confirm Edit</button>
+</form>
+<br />
+<a href="/spaces">Cancel</a>
+<%- include('partials/footer'); -%>
