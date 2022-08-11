@@ -1,6 +1,9 @@
 <%- include('partials/header'); -%>
 <h1>Space : <%= space.title %></h1>
 <h2>Location: <%= space.location %></h2>
+<div class="container">
+  <img src="<%= space.image%>" alt="" srcset="">
+</div>
 <a href="/spaces">All spaces</a>
 <a href="<%= space.id %>/edit"><button>Edit Space</button></a>
 <form action="/spaces/<%= space.id %>?_method=DELETE" method="post">
