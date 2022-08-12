@@ -1,10 +1,30 @@
 <%- include('partials/header'); -%>
 <h1>All Coworking spaces</h1>
-<ul>
+<!-- <ul>
   <% spaces.forEach(element => { %>
   <li><a href="/spaces/<%= element._id %> "><%= element.title %></a></li>
   <% }) %>
   <br />
   <a href="/spaces/new"><button>New</button></a>
-</ul>
-<%- include('partials/footer'); -%>
+</ul> -->
+<% for (let space of spaces){%>
+<div class="card mb-3">
+  <div class="row">
+    <div class="col-md-4">
+      <img class="img-fluid" src="<%= space.image %>" alt="" />
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title"><%= space.title %></h5>
+        <p class="card-text"><%= space.description %></p>
+        <p class="card-text">
+          <small class="text-muted"><%= space.location %></small>
+        </p>
+        <a class="btn btn-primary" href="/spaces/<%= space._id %>"
+          >View <%= space.title %></a
+        >
+      </div>
+    </div>
+  </div>
+</div>
+<% } %> <%- include('partials/footer'); -%>

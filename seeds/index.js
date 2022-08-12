@@ -12,8 +12,8 @@ let imgs = getImage(1).then((data) => {
   getImage(2).then((data) => {
     const img = imgs.concat(data);
   });
-  deleteDB()
-  seedDb(imgs)
+  deleteDB();
+  seedDb(imgs);
 });
 const seedDb = async (imgArr) => {
   for (let i = 0; i < 50; i++) {
@@ -21,9 +21,13 @@ const seedDb = async (imgArr) => {
     const randomDesc = Math.floor(Math.random() * descriptors.length);
     const randomPlace = Math.floor(Math.random() * places.length);
     const randomImg = Math.floor(Math.random() * imgArr.length);
+    const price = Math.floor(Math.random() * 20 + 10);
     let db = new coworker({
       title: `${descriptors[randomDesc]} ${places[randomPlace]}`,
       image: `${imgArr[randomImg]}`,
+      description:
+        "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Veniam sequi vitae amet soluta alias commodi natus eos dignissimos similique, dolorum obcaecati debitis eius voluptate perspiciatis aliquam rerum aliquid",
+      price: price,
       location: `${cities[random].city}, ${cities[random].state}`,
     });
     await db.save();
@@ -33,8 +37,7 @@ const seedDb = async (imgArr) => {
     }
   }
 };
-const deleteDB = async ()=>{
-  await coworker.deleteMany({})
-  console.log("Database cleared")
-}
-
+const deleteDB = async () => {
+  await coworker.deleteMany({});
+  console.log("Database cleared");
+};

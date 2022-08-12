@@ -1,12 +1,24 @@
 <%- include('partials/header'); -%>
-<h1>Space : <%= space.title %></h1>
-<h2>Location: <%= space.location %></h2>
-<div class="container">
-  <img src="<%= space.image%>" alt="" srcset="">
+<div class="row">
+  <div class="col-6 offset-3">
+    <div class="card">
+      <img src="<%= space.image %>" alt="" />
+      <div class="card-body">
+        <h5 class="card-title"><%= space.title %></h5>
+        <h6 class="card-subtitle mb-2 text-muted"><%= space.location %></h6>
+        <p class="card-text"><%= space.description %></p>
+        <p class="card-text"><b>$<%= space.price %>/day</b></p>
+        <a class="btn btn-success" href="<%= space.id %>/edit">Edit Space</a>
+        <form
+          class="d-inline"
+          action="/spaces/<%= space.id %>?_method=DELETE"
+          method="post"
+        >
+          <button class="btn btn-danger my-2" type="submit">Delete</button>
+        </form>
+      </div>
+    </div>
+    <a class="btn btn-primary my-2" href="/spaces">< All spaces</a>
+  </div>
 </div>
-<a href="/spaces">All spaces</a>
-<a href="<%= space.id %>/edit"><button>Edit Space</button></a>
-<form action="/spaces/<%= space.id %>?_method=DELETE" method="post">
-  <button type="submit">Delete</button>
-</form>
 <%- include('partials/footer'); -%>

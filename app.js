@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
 app.get("/", (req, res) => {
-  res.redirect("/spaces")
+  res.redirect("/spaces");
 });
 app.get("/spaces", async (req, res) => {
   const spaces = await coWorker.find();
@@ -25,6 +25,9 @@ app.post("/spaces", (req, res) => {
   const space = {
     title: req.body.name,
     location: `${req.body.city}, ${req.body.state}`,
+    description: `${req.body.description}`,
+    price: parseInt(req.body.price),
+    image: req.body.imageUrl,
   };
   coWorker.insertMany([space]).then((data) => {
     res.redirect(`/spaces/${data[0].id}`);
@@ -44,6 +47,9 @@ app.put("/spaces/:id", async (req, res) => {
   const space = {
     title: req.body.name,
     location: `${req.body.city}, ${req.body.state}`,
+    price: parseInt(req.body.price),
+    description: req.body.description,
+    image: req.body.imageUrl,
   };
   await coWorker.findByIdAndUpdate(req.params.id, space);
   res.redirect(`/spaces/${req.params.id}`);

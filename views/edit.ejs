@@ -1,14 +1,76 @@
 <%- include('partials/header'); -%>
-<h1>Editing <%= space.title%></h1>
-<form action="/spaces/<%= space.id %>?_method=PUT" method="post">
-  <label for="name">Name </label>
-  <input type="text" name="name" id="" value="<%= space.title %>" />
-  <label for="city">City </label>
-  <input type="text" name="city" value="<%= locArr[0] %>" />
-  <label for="state">State </label>
-  <input type="text" name="state" value="<%= locArr[1] %>" />
-  <button type="submit">Confirm Edit</button>
-</form>
-<br />
-<a href="/spaces">Cancel</a>
+<div class="row">
+  <div class="text-center">
+    <h1>Editing <%= space.title%></h1>
+  </div>
+  <div class="col-6 offset-3">
+    <form action="/spaces/<%= space.id %>?_method=PUT" method="post">
+      <div>
+        <label class="form-label" for="name">Name </label>
+        <input
+          class="form-control"
+          type="text"
+          name="name"
+          id=""
+          value="<%= space.title %>"
+        />
+      </div>
+      <div>
+        <label class="form-label" for="city">City </label>
+        <input
+          class="form-control"
+          type="text"
+          name="city"
+          value="<%= locArr[0] %>"
+        />
+      </div>
+      <div>
+        <label class="form-label" for="state">State </label>
+        <input
+          class="form-control"
+          type="text"
+          name="state"
+          value="<%= locArr[1] %>"
+        />
+      </div>
+      <div>
+        <label class="form-label" for="imageUrl">Image URL </label>
+        <input
+          class="form-control"
+          type="text"
+          name="imageUrl"
+          value="<%= space.image %>"
+        />
+      </div>
+      <div>
+        <label class="form-label" for="description">Description </label>
+        <textarea
+          class="form-control"
+          name="description"
+          id=""
+          cols="30"
+          rows="3"
+        >
+<%= space.description %></textarea
+        >
+      </div>
+      <div>
+        <label class="form-label" for="autoSizingInputGroup">Price</label>
+        <div class="input-group">
+          <div class="input-group-text">$</div>
+          <input
+            type="text"
+            class="form-control"
+            id="autoSizingInputGroup"
+            placeholder="0.00"
+            value="<%= space.price %>"
+            name="price"
+          />
+        </div>
+      </div>
+      <button class="btn btn-info my-2" type="submit">Confirm Edit</button>
+    </form>
+    <a href="/spaces">Cancel</a>
+  </div>
+</div>
 <%- include('partials/footer'); -%>
