@@ -2,22 +2,26 @@
 <div class="row">
   <h1 class="text-center">New Space</h1>
   <div class="col-6 offset-3">
-    <form action="/spaces" method="post">
+    <form action="/spaces" method="post" class="needs-validation" novalidate>
       <div>
         <label class="form-label" for="name">Name </label>
-        <input class="form-control" type="text" name="name" id="" />
+        <input class="form-control" type="text" name="name" id="" required />
+        <div class="valid-feedback">Looks good.</div>
       </div>
       <div>
         <label class="form-label" for="city">City </label>
-        <input class="form-control" type="text" name="city" />
+        <input class="form-control" type="text" name="city" required />
+        <div class="valid-feedback">Looks good.</div>
       </div>
       <div>
         <label class="form-label" for="state">State </label>
-        <input class="form-control" type="text" name="state" />
+        <input class="form-control" type="text" name="state" required />
+        <div class="valid-feedback">Looks good.</div>
       </div>
       <div>
         <label class="form-label" for="imageUrl">Image URL </label>
-        <input class="form-control" type="text" name="imageUrl" />
+        <input class="form-control" type="text" name="imageUrl" required />
+        <div class="valid-feedback">Looks good.</div>
       </div>
       <div>
         <label class="form-label" for="description">Description</label>
@@ -27,7 +31,9 @@
           id=""
           cols="30"
           rows="3"
+          required
         ></textarea>
+        <div class="valid-feedback">Looks good.</div>
       </div>
       <div class="col-auto">
         <label class="form-label" for="autoSizingInputGroup">Price</label>
@@ -39,7 +45,9 @@
             id="autoSizingInputGroup"
             placeholder="0.00"
             name="price"
+            required
           />
+          <div class="valid-feedback">Looks good.</div>
         </div>
       </div>
       <div class="my-2">

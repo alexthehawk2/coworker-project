@@ -13,7 +13,7 @@ let imgs = getImage(1).then((data) => {
     const img = imgs.concat(data);
   });
   deleteDB();
-  seedDb(imgs);
+  // seedDb(imgs);
 });
 const seedDb = async (imgArr) => {
   for (let i = 0; i < 50; i++) {

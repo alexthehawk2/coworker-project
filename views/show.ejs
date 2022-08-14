@@ -8,10 +8,10 @@
         <h6 class="card-subtitle mb-2 text-muted"><%= space.location %></h6>
         <p class="card-text"><%= space.description %></p>
         <p class="card-text"><b>$<%= space.price %>/day</b></p>
-        <a class="btn btn-success" href="<%= space.id %>/edit">Edit Space</a>
+        <a class="btn btn-success" href="<%= space._id %>/edit">Edit Space</a>
         <form
           class="d-inline"
-          action="/spaces/<%= space.id %>?_method=DELETE"
+          action="/spaces/<%= space._id %>?_method=DELETE"
           method="post"
         >
           <button class="btn btn-danger my-2" type="submit">Delete</button>

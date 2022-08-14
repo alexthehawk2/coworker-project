@@ -4,7 +4,12 @@
     <h1>Editing <%= space.title%></h1>
   </div>
   <div class="col-6 offset-3">
-    <form action="/spaces/<%= space.id %>?_method=PUT" method="post">
+    <form
+      action="/spaces/<%= space._id %>?_method=PUT"
+      method="post"
+      novalidate
+      class="needs-validation"
+    >
       <div>
         <label class="form-label" for="name">Name </label>
         <input
@@ -13,7 +18,9 @@
           name="name"
           id=""
           value="<%= space.title %>"
+          required
         />
+        <div class="valid-feedback">Looks good.</div>
       </div>
       <div>
         <label class="form-label" for="city">City </label>
@@ -22,7 +29,9 @@
           type="text"
           name="city"
           value="<%= locArr[0] %>"
+          required
         />
+        <div class="valid-feedback">Looks good.</div>
       </div>
       <div>
         <label class="form-label" for="state">State </label>
@@ -31,7 +40,9 @@
           type="text"
           name="state"
           value="<%= locArr[1] %>"
+          required
         />
+        <div class="valid-feedback">Looks good.</div>
       </div>
       <div>
         <label class="form-label" for="imageUrl">Image URL </label>
@@ -40,7 +51,9 @@
           type="text"
           name="imageUrl"
           value="<%= space.image %>"
+          required
         />
+        <div class="valid-feedback">Looks good.</div>
       </div>
       <div>
         <label class="form-label" for="description">Description </label>
@@ -50,9 +63,11 @@
           id=""
           cols="30"
           rows="3"
+          required
         >
 <%= space.description %></textarea
         >
+        <div class="valid-feedback">Looks good.</div>
       </div>
       <div>
         <label class="form-label" for="autoSizingInputGroup">Price</label>
@@ -65,7 +80,9 @@
             placeholder="0.00"
             value="<%= space.price %>"
             name="price"
+            required
           />
+          <div class="valid-feedback">Looks good.</div>
         </div>
       </div>
       <button class="btn btn-info my-2" type="submit">Confirm Edit</button>

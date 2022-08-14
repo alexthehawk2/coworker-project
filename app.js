@@ -1,8 +1,9 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
-const coworker = require("./models/coworker");
 const coWorker = require("./models/coworker");
+const asyncErrorWrapper = require("./utils/asyncErrorWrapper");
+const AppError = require("./utils/AppError");
 mongoose.connect("mongodb://localhost:27017/coworker").then(() => {
   console.log("database connected");
 });
@@ -21,18 +22,33 @@ app.get("/spaces", async (req, res) => {
 app.get("/spaces/new", (req, res) => {
   res.render("new", { title: "Create new space" });
 });
-app.post("/spaces", (req, res) => {
-  const space = {
-    title: req.body.name,
-    location: `${req.body.city}, ${req.body.state}`,
-    description: `${req.body.description}`,
-    price: parseInt(req.body.price),
-    image: req.body.imageUrl,
-  };
-  coWorker.insertMany([space]).then((data) => {
-    res.redirect(`/spaces/${data[0].id}`);
-  });
-});
+app.post(
+  "/spaces",
+  asyncErrorWrapper(async (req, res, next) => {
+    if (
+      !req.body.name ||
+      !req.body.city ||
+      !req.body.state ||
+      !req.body.description ||
+      !req.body.imageUrl ||
+      !req.body.price
+    ) {
+      throw new AppError("No form data", 400);
+    }
+    console.log(req.body);
+    const { name, city, state, imageUrl, description, price } = req.body;
+    const space = new coWorker({
+      title: name,
+      location: `${city}, ${state}`,
+      image: imageUrl,
+      description,
+      price,
+    });
+    console.log(space._id);
+    await space.save();
+    res.redirect(`/spaces/${space._id}`);
+  })
+);
 app.get("/spaces/:id", async (req, res) => {
   const space = await coWorker.findById(req.params.id);
   res.render("show", { title: `${space.title} Details`, space });
@@ -58,6 +74,13 @@ app.delete("/spaces/:id", async (req, res) => {
   await coWorker.findByIdAndDelete(req.params.id);
   res.redirect("/spaces");
 });
-app.listen(3001, () => {
-  console.log("started on port 3001");
+// app.all("*", (req, res, next) => {
+//   next(new AppError("Page not found", 404));
+// });
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message = "something went wrong" } = err;
+  res.status(statusCode).send(message);
+});
+app.listen(3000, () => {
+  console.log("started on port 3000");
 });
