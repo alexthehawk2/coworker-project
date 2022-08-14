@@ -1,12 +1,5 @@
 <%- include('partials/header'); -%>
 <h1>All Coworking spaces</h1>
-<!-- <ul>
-  <% spaces.forEach(element => { %>
-  <li><a href="/spaces/<%= element._id %> "><%= element.title %></a></li>
-  <% }) %>
-  <br />
-  <a href="/spaces/new"><button>New</button></a>
-</ul> -->
 <% for (let space of spaces){%>
 <div class="card mb-3">
   <div class="row">

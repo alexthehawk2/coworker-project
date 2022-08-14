@@ -15,10 +15,10 @@ app.use(methodOverride("_method"));
 app.get("/", (req, res) => {
   res.redirect("/spaces");
 });
-app.get("/spaces", async (req, res) => {
+app.get("/spaces", asyncErrorWrapper(async (req, res) => {
   const spaces = await coWorker.find();
   res.render("spaces", { title: "Coworking Space Locations", spaces });
-});
+}));
 app.get("/spaces/new", (req, res) => {
   res.render("new", { title: "Create new space" });
 });
@@ -35,31 +35,31 @@ app.post(
     ) {
       throw new AppError("No form data", 400);
     }
-    console.log(req.body);
-    const { name, city, state, imageUrl, description, price } = req.body;
     const space = new coWorker({
-      title: name,
-      location: `${city}, ${state}`,
-      image: imageUrl,
-      description,
-      price,
+      title: req.body.name,
+      location: `${req.body.city}, ${req.body.state}`,
+      image: req.body.imageUrl,
+      description: req.body.description,
+      price: req.body.price,
     });
-    console.log(space._id);
     await space.save();
-    res.redirect(`/spaces/${space._id}`);
+    res.redirect(`/spaces`);
   })
 );
-app.get("/spaces/:id", async (req, res) => {
+app.get("/spaces/:id", asyncErrorWrapper(async (req, res, next) => {
   const space = await coWorker.findById(req.params.id);
+  if(space === null){
+    throw new AppError("Invalid Space, not found", 404)
+  }
   res.render("show", { title: `${space.title} Details`, space });
-});
-app.get("/spaces/:id/edit", async (req, res) => {
+}));
+app.get("/spaces/:id/edit", asyncErrorWrapper(async (req, res) => {
   const id = req.params.id;
   const space = await coWorker.findById(id);
   const locArr = space.location.split(", ");
   res.render("edit", { title: `Edit ${space.title}`, space, locArr });
-});
-app.put("/spaces/:id", async (req, res) => {
+}));
+app.put("/spaces/:id", asyncErrorWrapper(async (req, res) => {
   const space = {
     title: req.body.name,
     location: `${req.body.city}, ${req.body.state}`,
@@ -69,14 +69,14 @@ app.put("/spaces/:id", async (req, res) => {
   };
   await coWorker.findByIdAndUpdate(req.params.id, space);
   res.redirect(`/spaces/${req.params.id}`);
-});
+}));
 app.delete("/spaces/:id", async (req, res) => {
   await coWorker.findByIdAndDelete(req.params.id);
   res.redirect("/spaces");
 });
-// app.all("*", (req, res, next) => {
-//   next(new AppError("Page not found", 404));
-// });
+app.all("*", (req, res, next) => {
+  next(new AppError("Page not found", 404));
+});
 app.use((err, req, res, next) => {
   const { statusCode = 500, message = "something went wrong" } = err;
   res.status(statusCode).send(message);

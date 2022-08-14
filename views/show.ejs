@@ -4,11 +4,11 @@
     <div class="card">
       <img src="<%= space.image %>" alt="" />
       <div class="card-body">
-        <h5 class="card-title"><%= space.title %></h5>
+        <h5 class="card-title"><%= title %></h5>
         <h6 class="card-subtitle mb-2 text-muted"><%= space.location %></h6>
         <p class="card-text"><%= space.description %></p>
         <p class="card-text"><b>$<%= space.price %>/day</b></p>
-        <a class="btn btn-success" href="<%= space._id %>/edit">Edit Space</a>
+        <a class="btn btn-success" href="/spaces/<%= space._id %>/edit">Edit Space</a>
         <form
           class="d-inline"
           action="/spaces/<%= space._id %>?_method=DELETE"
