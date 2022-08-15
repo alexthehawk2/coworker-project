@@ -4,7 +4,9 @@ const Schema = mongoose.Schema;
 const coworkerSchema = new Schema({
   title: String,
   image: String,
-  price: Number,
+  price: {
+    type: Number,
+  },
   description: String,
   location: String,
 });
