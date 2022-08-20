@@ -2,10 +2,12 @@ const express = require("express");
 const mongoose = require("mongoose");
 const Joi = require("joi");
 const { joiCoworkerSchema } = require("./validators/crudEval");
+const {joiReviewSchema} = require("./validators/reviewVal")
 const methodOverride = require("method-override");
-const coWorker = require("./models/coworker");
+const coWorker = require("./models/coWorker");
 const asyncErrorWrapper = require("./utils/asyncErrorWrapper");
 const AppError = require("./utils/AppError");
+const Review = require("./models/review");
 mongoose.connect("mongodb://localhost:27017/coworker").then(() => {
   console.log("database connected");
 });
@@ -13,7 +15,7 @@ const app = express();
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
-
+//validator functions
 const spaceValidation = (req, res, next) => {
   const validationResult = joiCoworkerSchema.validate(req.body);
   if (validationResult.error) {
@@ -22,7 +24,14 @@ const spaceValidation = (req, res, next) => {
     next();
   }
 };
-
+const reviewValidation = (req,res,next)=>{
+  const validationResult = joiReviewSchema.validate(req.body)
+  if(validationResult.error){
+    throw new AppError(`${validationResult.error.details[0].message}`, 400);
+  } else {
+    next();
+  }
+}
 app.get("/", (req, res) => {
   res.redirect("/spaces");
 });
@@ -54,7 +63,7 @@ app.post(
 app.get(
   "/spaces/:id",
   asyncErrorWrapper(async (req, res, next) => {
-    const space = await coWorker.findById(req.params.id);
+    const space = await coWorker.findById(req.params.id).populate('reviews');
     if (space === null) {
       throw new AppError("Invalid Space, not found", 404);
     }
@@ -89,6 +98,17 @@ app.delete("/spaces/:id", async (req, res) => {
   await coWorker.findByIdAndDelete(req.params.id);
   res.redirect("/spaces");
 });
+  //reviews route
+app.post('/spaces/:id/reviews', reviewValidation,asyncErrorWrapper(async(req,res)=>{
+  const space = await coWorker.findById(req.params.id)
+  let {review } = req.body
+  review = new Review(review)
+  space.reviews.push(review)
+  await space.save()
+  await review.save()
+  res.redirect(`/spaces/${req.params.id}`)
+}))
+  //error handling middlewares
 app.all("*", (req, res, next) => {
   next(new AppError("Page not found!", 404));
 });
@@ -105,6 +125,10 @@ app.use((err, req, res, next) => {
   if (err.name === "ValidationError") {
     statusCode = 400;
     err.message = "Price must be a number and greater than 0";
+  }
+  if (err.name === "CastError"){
+    statusCode = 404
+    err.message = "Space not found"
   }
   res.status(statusCode).render("error", {
     title: `Oh no! ${err.statusCode} Error`,

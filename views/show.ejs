@@ -1,24 +1,69 @@
 <%- include('partials/header'); -%>
-<div class="row">
-  <div class="col-6 offset-3">
-    <div class="card">
-      <img src="<%= space.image %>" alt="" />
-      <div class="card-body">
-        <h5 class="card-title"><%= title %></h5>
-        <h6 class="card-subtitle mb-2 text-muted"><%= space.location %></h6>
-        <p class="card-text"><%= space.description %></p>
-        <p class="card-text"><b>$<%= space.price %>/day</b></p>
-        <a class="btn btn-success" href="/spaces/<%= space._id %>/edit">Edit Space</a>
-        <form
-          class="d-inline"
-          action="/spaces/<%= space._id %>?_method=DELETE"
-          method="post"
-        >
-          <button class="btn btn-danger my-2" type="submit">Delete</button>
-        </form>
+  <div class="row">
+    <div class="col-6">
+      <div class="card">
+        <img src="<%= space.image %>" alt="" />
+        <div class="card-body">
+          <h5 class="card-title">
+            <%= title %>
+          </h5>
+          <h6 class="card-subtitle mb-2 text-muted">
+            <%= space.location %>
+          </h6>
+          <p class="card-text">
+            <%= space.description %>
+          </p>
+          <p class="card-text"><b>$<%= space.price %>/day</b></p>
+          <a class="btn btn-success" href="/spaces/<%= space._id %>/edit">Edit Space</a>
+          <form class="d-inline" action="/spaces/<%= space._id %>?_method=DELETE" method="post">
+            <button class="btn btn-danger my-2" type="submit">Delete</button>
+          </form>
+        </div>
+      </div>
+      <div class="my-2">
+        <a class="btn btn-primary" href="/spaces">< All spaces</a>
       </div>
     </div>
-    <a class="btn btn-primary my-2" href="/spaces">< All spaces</a>
+    <div class="col-6">
+      <h3>Leave A Review</h3>
+      <form action="/spaces/<%= space.id %>/reviews" class="needs-validation" method="post" novalidate>
+        <div>
+          <input type="range" class="form-range" id="myRange" max="5" min="1" name="review[rating]">
+          <div class="text-center" id="myValue"></div>
+        </div>
+        <div class="mb-3">
+          <label for="review[body]" class="form-label">Review</label>
+          <textarea class="form-control" rows="3" name="review[body]" minlength="5" required></textarea>
+        </div>
+        <button type="submit" class="mb-3 btn btn-primary">Submit Review</button>
+      </form>
+      <h3>Reviews</h3>
+        <% if(space.reviews.length===0){ %> 
+        <div class="card">
+          <div class="mb-2">
+            <p class="text-center">No reviews to display</p>
+          </div>
+        </div>  
+        <% } %>
+      <% for(let review of space.reviews){ %> 
+        <div class="card mb-2">
+          <div class="card-body">
+            <h5 class="card-title">Rating: <%= review.rating %></h5>
+            <p class="card-text">Review: <%= review.body %></p>
+          </div>
+        </div>
+      <% } %> 
+    </div>   
+    </div>
   </div>
-</div>
-<%- include('partials/footer'); -%>
+
+  <script type="text/javascript" charset="utf-8">
+    let myRange = document.querySelector('#myRange');
+    let myValue = document.querySelector('#myValue');
+    let myUnits = 'Star';
+    myValue.innerHTML = myRange.value + ' ' + myUnits;
+    myRange.oninput = function () {
+      myValue.innerHTML = myRange.value + ' ' + myUnits;
+    };
+  </script>
+  <%- include('partials/footer'); -%>
