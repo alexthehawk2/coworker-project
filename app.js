@@ -8,6 +8,7 @@ const coWorker = require("./models/coWorker");
 const asyncErrorWrapper = require("./utils/asyncErrorWrapper");
 const AppError = require("./utils/AppError");
 const Review = require("./models/review");
+const { ref } = require("joi");
 mongoose.connect("mongodb://localhost:27017/coworker").then(() => {
   console.log("database connected");
 });
@@ -67,6 +68,7 @@ app.get(
     if (space === null) {
       throw new AppError("Invalid Space, not found", 404);
     }
+    console.log(space)
     res.render("show", { title: `${space.title} Details`, space });
   })
 );
@@ -108,6 +110,11 @@ app.post('/spaces/:id/reviews', reviewValidation,asyncErrorWrapper(async(req,res
   await review.save()
   res.redirect(`/spaces/${req.params.id}`)
 }))
+app.delete('/spaces/:id/reviews/:reviewId', async (req,res)=>{
+  await coWorker.findByIdAndUpdate(req.params.id,{$pull:{reviews: req.params.reviewId}})
+  await Review.findByIdAndDelete(req.params.id)
+  res.redirect(`/spaces/${req.params.id}`)
+})
   //error handling middlewares
 app.all("*", (req, res, next) => {
   next(new AppError("Page not found!", 404));
