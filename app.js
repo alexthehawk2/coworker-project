@@ -9,6 +9,7 @@ const asyncErrorWrapper = require("./utils/asyncErrorWrapper");
 const AppError = require("./utils/AppError");
 const Review = require("./models/review");
 const { ref } = require("joi");
+const spaces = require('./routes/spaces')
 mongoose.connect("mongodb://localhost:27017/coworker").then(() => {
   console.log("database connected");
 });
@@ -17,14 +18,6 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 //validator functions
-const spaceValidation = (req, res, next) => {
-  const validationResult = joiCoworkerSchema.validate(req.body);
-  if (validationResult.error) {
-    throw new AppError(`${validationResult.error.details[0].message}`, 400);
-  } else {
-    next();
-  }
-};
 const reviewValidation = (req,res,next)=>{
   const validationResult = joiReviewSchema.validate(req.body)
   if(validationResult.error){
@@ -33,71 +26,8 @@ const reviewValidation = (req,res,next)=>{
     next();
   }
 }
+app.use('/spaces', spaces)
 app.get("/", (req, res) => {
-  res.redirect("/spaces");
-});
-app.get(
-  "/spaces",
-  asyncErrorWrapper(async (req, res) => {
-    const spaces = await coWorker.find();
-    res.render("spaces", { title: "Coworking Space Locations", spaces });
-  })
-);
-app.get("/spaces/new", (req, res) => {
-  res.render("new", { title: "Create new space" });
-});
-app.post(
-  "/spaces",
-  spaceValidation,
-  asyncErrorWrapper(async (req, res, next) => {
-    const space = new coWorker({
-      title: req.body.name,
-      location: `${req.body.city}, ${req.body.state}`,
-      image: req.body.imageUrl,
-      description: req.body.description,
-      price: req.body.price,
-    });
-    await space.save();
-    res.redirect(`/spaces/${space.id}`);
-  })
-);
-app.get(
-  "/spaces/:id",
-  asyncErrorWrapper(async (req, res, next) => {
-    const space = await coWorker.findById(req.params.id).populate('reviews');
-    if (space === null) {
-      throw new AppError("Invalid Space, not found", 404);
-    }
-    console.log(space)
-    res.render("show", { title: `${space.title} Details`, space });
-  })
-);
-app.get(
-  "/spaces/:id/edit",
-  asyncErrorWrapper(async (req, res, next) => {
-    const id = req.params.id;
-    const space = await coWorker.findById(id);
-    const locArr = space.location.split(", ");
-    res.render("edit", { title: `Edit ${space.title}`, space, locArr });
-  })
-);
-app.put(
-  "/spaces/:id",
-  spaceValidation,
-  asyncErrorWrapper(async (req, res, next) => {
-    const space = {
-      title: req.body.name,
-      location: `${req.body.city}, ${req.body.state}`,
-      price: req.body.price,
-      description: req.body.description,
-      image: req.body.imageUrl,
-    };
-    await coWorker.findByIdAndUpdate(req.params.id, space);
-    res.redirect(`/spaces/${req.params.id}`);
-  })
-);
-app.delete("/spaces/:id", async (req, res) => {
-  await coWorker.findByIdAndDelete(req.params.id);
   res.redirect("/spaces");
 });
   //reviews route

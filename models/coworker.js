@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-
+const Review = require('../models/review')
 const coworkerSchema = new Schema({
   title: String,
   image: String,
@@ -16,5 +16,15 @@ const coworkerSchema = new Schema({
     }
   ]
 });
+
+coworkerSchema.post('findOneAndDelete', async (doc)=>{
+  if(doc){
+    await Review.deleteMany({
+      _id: {
+        $in: doc.reviews
+      }
+    })
+  }
+})
 
 module.exports = mongoose.model("Coworker", coworkerSchema);
