@@ -2,8 +2,7 @@ const express = require("express");
 const coWorker = require("../models/coWorker");
 const AppError = require("../utils/AppError");
 const asyncErrorWrapper = require("../utils/asyncErrorWrapper");
-const joiCoworkerSchema = require('../validators/crudEval')
-const joi = require('joi')
+const {joiCoworkerSchema} = require('../validators/validator')
 const router = express.Router();
 
 const spaceValidation = (req, res, next) => {
