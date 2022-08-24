@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
+const session = require('express-session')
+const flash = require('connect-flash')
 const AppError = require("./utils/AppError");
 const spaces = require('./routes/spaces')
 const reviews = require('./routes/review')
@@ -13,6 +15,18 @@ app.set("view engine", "ejs");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
+const sessionOptions = {
+  resave:false,
+  secret:'testsecret',
+  saveUninitialized: true,
+  cookie: {
+    httpOnly:true,
+    expires: Date.now() + 1000*60*60*24*7,
+    maxAge:1000*60*60*24*7
+  }
+}
+app.use(session(sessionOptions))
+app.use(flash())
 //space route
 app.use('/spaces', spaces)
 //review route
