@@ -18,7 +18,7 @@ router.get(
   "/",
   asyncErrorWrapper(async (req, res) => {
     const spaces = await coWorker.find();
-    res.render("spaces", { title: "Coworking Space Locations", spaces });
+    res.render("spaces", { title: "Coworking Space Locations", spaces, message: res.locals.success});
   })
 );
 router.get("/new", (req, res) => {
@@ -36,6 +36,7 @@ router.post(
       price: req.body.price,
     });
     await space.save();
+    req.flash('success', 'Successfully created new space')
     res.redirect(`/spaces/${space.id}`);
   })
 );
@@ -46,7 +47,7 @@ router.get(
     if (space === null) {
       throw new AppError("Invalid Space, not found", 404);
     }
-    res.render("show", { title: `${space.title} Details`, space });
+    res.render("show", { title: `${space.title} Details`, space, message: res.locals.success});
   })
 );
 router.get(

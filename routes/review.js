@@ -21,6 +21,7 @@ router.post('/', reviewValidation, asyncErrorWrapper(async (req, res) => {
     space.reviews.push(review)
     await space.save()
     await review.save()
+    req.flash('success','Review Added succesfully')
     res.redirect(`/spaces/${req.params.id}`)
 }))
 router.delete('/:reviewId', async (req, res) => {

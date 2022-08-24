@@ -1,4 +1,15 @@
 <%- include('partials/header'); -%>
+<!-- toast message -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
+  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div id="message" class="toast-body"><%= message %></div>
+  </div>
+</div>
+
+<!--body  -->
   <div class="row">
     <div class="col-6">
       <div class="card">
@@ -69,4 +80,5 @@
       myValue.innerHTML = myRange.value + ' ' + myUnits;
     };
   </script>
+  <script src="/utils/toast.js"></script>
   <%- include('partials/footer'); -%>
