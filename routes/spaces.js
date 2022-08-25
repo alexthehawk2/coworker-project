@@ -18,7 +18,7 @@ router.get(
   "/",
   asyncErrorWrapper(async (req, res) => {
     const spaces = await coWorker.find();
-    res.render("spaces", { title: "Coworking Space Locations", spaces, message: res.locals.success });
+    res.render("spaces", { title: "Coworking Space Locations", spaces});
   })
 );
 router.get("/new", (req, res) => {
@@ -46,9 +46,9 @@ router.get(
     const space = await coWorker.findById(req.params.id).populate("reviews");
     if (!space) {
       req.flash('error', 'Space not found!')
-      res.redirect('/spaces')
+      return res.redirect('/spaces')
     }
-    res.render("show", { title: `${space.title} Details`, space, message: res.locals.success });
+    res.render("show", { title: `${space.title} Details`, space});
   })
 );
 router.get(
@@ -56,6 +56,10 @@ router.get(
   asyncErrorWrapper(async (req, res, next) => {
     const id = req.params.id;
     const space = await coWorker.findById(id);
+    if (!space) {
+      req.flash('error', 'Space not found!')
+      return res.redirect('/spaces')
+    }
     const locArr = space.location.split(", ");
     res.render("edit", { title: `Edit ${space.title}`, space, locArr });
   })
@@ -76,10 +80,10 @@ router.put(
     res.redirect(`/spaces/${req.params.id}`);
   })
 );
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", asyncErrorWrapper(async (req, res) => {
   await coWorker.findByIdAndDelete(req.params.id);
   req.flash('success', 'Deleted successfully')
   res.redirect("/spaces");
-});
+}));
 
 module.exports = router

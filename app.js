@@ -61,7 +61,7 @@ app.use((err, req, res, next) => {
   }
   if (err.name === "CastError") {
     statusCode = 404;
-    err.message = "Space not found";
+    err.message = `${err.path==='reviews'?'Review':'Space'} not found`;
   }
   res.status(statusCode).render("error", {
     title: `Oh no! ${err.statusCode} Error`,

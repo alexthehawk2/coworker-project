@@ -5,7 +5,7 @@
     <div class="toast-header">
       <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
     </div>
-    <div id="message" class="toast-body"><%= message %></div>
+    <div id="message" class="toast-body"><%= success %></div>
   </div>
 </div>
 <!--body  -->
@@ -38,6 +38,7 @@
       <h3>Leave A Review</h3>
       <form action="/spaces/<%= space.id %>/reviews" class="needs-validation" method="post" novalidate>
         <div>
+          <label for="review[rating]" class="form-label">Rating</label>
           <input type="range" class="form-range" id="myRange" max="5" min="1" name="review[rating]">
           <div class="text-center" id="myValue"></div>
         </div>
