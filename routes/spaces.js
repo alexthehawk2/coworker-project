@@ -2,27 +2,27 @@ const express = require("express");
 const coWorker = require("../models/coWorker");
 const AppError = require("../utils/AppError");
 const asyncErrorWrapper = require("../utils/asyncErrorWrapper");
-const {joiCoworkerSchema} = require('../validators/validator')
+const { joiCoworkerSchema } = require('../validators/validator')
 const router = express.Router();
 
 const spaceValidation = (req, res, next) => {
-    const validationResult = joiCoworkerSchema.validate(req.body);
-    if (validationResult.error) {
-      throw new AppError(`${validationResult.error.details[0].message}`, 400);
-    } else {
-      next();
-    }
-  };
+  const validationResult = joiCoworkerSchema.validate(req.body);
+  if (validationResult.error) {
+    throw new AppError(`${validationResult.error.details[0].message}`, 400);
+  } else {
+    next();
+  }
+};
 
 router.get(
   "/",
   asyncErrorWrapper(async (req, res) => {
     const spaces = await coWorker.find();
-    res.render("spaces", { title: "Coworking Space Locations", spaces, message: res.locals.success});
+    res.render("spaces", { title: "Coworking Space Locations", spaces, message: res.locals.success });
   })
 );
 router.get("/new", (req, res) => {
-  res.render("new", { title: "Create new space" });
+  res.render("new", { title: "Create new space"});
 });
 router.post(
   "/",
@@ -44,10 +44,11 @@ router.get(
   "/:id",
   asyncErrorWrapper(async (req, res, next) => {
     const space = await coWorker.findById(req.params.id).populate("reviews");
-    if (space === null) {
-      throw new AppError("Invalid Space, not found", 404);
+    if (!space) {
+      req.flash('error', 'Space not found!')
+      res.redirect('/spaces')
     }
-    res.render("show", { title: `${space.title} Details`, space, message: res.locals.success});
+    res.render("show", { title: `${space.title} Details`, space, message: res.locals.success });
   })
 );
 router.get(
@@ -71,11 +72,13 @@ router.put(
       image: req.body.imageUrl,
     };
     await coWorker.findByIdAndUpdate(req.params.id, space);
+    req.flash('success', 'Edited successfully')
     res.redirect(`/spaces/${req.params.id}`);
   })
 );
 router.delete("/:id", async (req, res) => {
   await coWorker.findByIdAndDelete(req.params.id);
+  req.flash('success', 'Deleted successfully')
   res.redirect("/spaces");
 });
 

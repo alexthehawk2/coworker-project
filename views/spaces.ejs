@@ -1,4 +1,13 @@
 <%- include('partials/header'); -%>
+<!-- toast message -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
+  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div id="message" class="toast-body"><%= message %></div>
+  </div>
+</div>
 <h1>Available Coworking Spaces</h1>
 <% for (let space of spaces){%>
 <div class="card mb-3">
@@ -20,4 +29,6 @@
     </div>
   </div>
 </div>
-<% } %> <%- include('partials/footer'); -%>
+<% } %>
+<script src="/utils/toast.js"></script>
+<%- include('partials/footer'); -%>

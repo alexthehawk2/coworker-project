@@ -27,6 +27,7 @@ router.post('/', reviewValidation, asyncErrorWrapper(async (req, res) => {
 router.delete('/:reviewId', async (req, res) => {
     await coWorker.findByIdAndUpdate(req.params.id, { $pull: { reviews: req.params.reviewId } })
     await Review.findByIdAndDelete(req.params.id)
+    req.flash('success', 'Review deleted')
     res.redirect(`/spaces/${req.params.id}`)
 })
 

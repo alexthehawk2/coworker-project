@@ -1,9 +1,7 @@
-const toastTrigger = document.getElementById('message')
-const toastLiveExample = document.getElementById('liveToast')
-if (toastTrigger) {
-  toastTrigger.addEventListener('load', () => {
-    const toast = new bootstrap.Toast(toastLiveExample)
-
+const toastElement = document.getElementById('liveToast')
+window.addEventListener('load',()=>{
+  if(document.getElementById('message').innerText){
+    const toast = new bootstrap.Toast(toastElement)
     toast.show()
-  })
-}
+  }
+})
