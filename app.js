@@ -5,8 +5,13 @@ const methodOverride = require("method-override");
 const session = require("express-session");
 const flash = require("connect-flash");
 const AppError = require("./utils/AppError");
+
 const spaces = require("./routes/spaces");
 const reviews = require("./routes/review");
+const auth = require("./routes/auth");
+const passport = require("passport");
+const User = require("./models/user");
+
 mongoose.connect("mongodb://localhost:27017/coworker").then(() => {
   console.log("database connected");
 });
@@ -15,24 +20,35 @@ app.set("view engine", "ejs");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
-app.use(express.static('public'))
+app.use(express.static("public"));
+
 const sessionOptions = {
   resave: false,
   secret: "testsecret",
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
-    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
-    maxAge: 1000 * 60 * 60 * 24 * 7,
+    expires: Date.now() + 1000 * 60 * 60 * 24,
+    maxAge: 1000 * 60 * 60 * 24,
   },
 };
+
 app.use(session(sessionOptions));
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(User.createStrategy());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use(flash());
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
-  res.locals.error = req.flash('error')
+  res.locals.error = req.flash("error");
   next();
 });
+//auth route
+app.use("/", auth);
 //space route
 app.use("/spaces", spaces);
 //review route
@@ -61,7 +77,7 @@ app.use((err, req, res, next) => {
   }
   if (err.name === "CastError") {
     statusCode = 404;
-    err.message = `${err.path==='reviews'?'Review':'Space'} not found`;
+    err.message = `${err.path === "reviews" ? "Review" : "Space"} not found`;
   }
   res.status(statusCode).render("error", {
     title: `Oh no! ${err.statusCode} Error`,
