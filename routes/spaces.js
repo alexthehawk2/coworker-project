@@ -4,6 +4,7 @@ const AppError = require("../utils/AppError");
 const connectEnsureLogin = require("connect-ensure-login");
 const asyncErrorWrapper = require("../utils/asyncErrorWrapper");
 const { joiCoworkerSchema } = require("../validators/validator");
+const {isLoggedIn}= require('../authMiddleware')
 const router = express.Router();
 
 const spaceValidation = (req, res, next) => {
@@ -22,11 +23,17 @@ router.get(
     res.render("spaces", { title: "Coworking Space Locations", spaces });
   })
 );
-router.get("/new", connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+router.get("/new", (req, res) => {
+  if(!req.isAuthenticated()){
+    req.flash('error', 'Please login to create a new space')
+    return res.redirect('/login')
+  }
+  console.log(req.user)
   res.render("new", { title: "Create new space" });
 });
 router.post(
   "/",
+  isLoggedIn,
   spaceValidation,
   asyncErrorWrapper(async (req, res, next) => {
     const space = new coWorker({
@@ -54,6 +61,7 @@ router.get(
 );
 router.get(
   "/:id/edit",
+  isLoggedIn,
   asyncErrorWrapper(async (req, res, next) => {
     const id = req.params.id;
     const space = await coWorker.findById(id);
@@ -67,6 +75,7 @@ router.get(
 );
 router.put(
   "/:id",
+  isLoggedIn,
   spaceValidation,
   asyncErrorWrapper(async (req, res, next) => {
     const space = {
@@ -83,6 +92,7 @@ router.put(
 );
 router.delete(
   "/:id",
+  isLoggedIn,
   asyncErrorWrapper(async (req, res) => {
     await coWorker.findByIdAndDelete(req.params.id);
     req.flash("success", "Deleted successfully");

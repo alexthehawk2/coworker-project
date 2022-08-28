@@ -16,7 +16,7 @@ let imgs = getImage(1).then((data) => {
   seedDb(imgs);
 });
 const seedDb = async (imgArr) => {
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 10; i++) {
     const random = Math.floor(Math.random() * 1000);
     const randomDesc = Math.floor(Math.random() * descriptors.length);
     const randomPlace = Math.floor(Math.random() * places.length);

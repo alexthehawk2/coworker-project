@@ -33,14 +33,19 @@
               <li class="nav-item">
                 <a class="nav-link" href="/login">Sign in</a>
               </li>
+              <% if(!isLoggedIn){%> 
               <li class="nav-item">
                 <a class="nav-link" href="/register">Register</a>
               </li>
-              <li class="nav-item btn btn-danger">
-                <a class="nav-link" href="/logout">Logout</a>
+              <% } %>
+              <% if(isLoggedIn){%> 
+              <li class="nav-item">
+                <a style="color: red;" class="nav-link" href="/logout">Logout</a>
               </li>
+              <% } %> 
             </ul>
           </div>
         </div>
     </nav>
     <main class="container mt-5">
+
