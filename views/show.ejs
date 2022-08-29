@@ -37,6 +37,7 @@
       </div>
     </div>
     <div class="col-6">
+      <% if(isLoggedIn){%> 
       <h3>Leave A Review</h3>
       <form action="/spaces/<%= space.id %>/reviews" class="needs-validation" method="post" novalidate>
         <div>
@@ -50,6 +51,7 @@
         </div>
         <button type="submit" class="mb-3 btn btn-primary">Submit Review</button>
       </form>
+      <% } %>
       <h3>Reviews</h3>
         <% if(space.reviews.length===0){ %> 
         <div class="card">

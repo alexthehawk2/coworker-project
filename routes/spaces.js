@@ -20,15 +20,11 @@ router.get(
   "/",
   asyncErrorWrapper(async (req, res) => {
     const spaces = await coWorker.find();
+    console.log(req.session)
     res.render("spaces", { title: "Coworking Space Locations", spaces });
   })
 );
-router.get("/new", (req, res) => {
-  if(!req.isAuthenticated()){
-    req.flash('error', 'Please login to create a new space')
-    return res.redirect('/login')
-  }
-  console.log(req.user)
+router.get("/new", isLoggedIn,(req, res) => {
   res.render("new", { title: "Create new space" });
 });
 router.post(

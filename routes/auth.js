@@ -21,13 +21,14 @@ router.get("/register", (req, res) => {
 });
 router.post(
   "/register",
-  asyncErrorWrapper(async (req, res) => {
+  asyncErrorWrapper(async (req, res, next) => {
     const { username, password } = req.body;
-    console.log(username, password);
     const result = await User.register({ username }, password);
-    console.log(result);
-    req.flash("success", "Account created successfully, please login.");
-    res.redirect("/login");
+    req.login(result, err =>{
+      if(err){return next(err)}
+      req.flash("success", "Account created successfully.");
+      res.redirect("/spaces");
+    })
   })
 );
 router.post(
@@ -36,10 +37,12 @@ router.post(
     failureFlash: true,
     successFlash: true,
     failureRedirect: "/login",
+    keepSessionInfo:true
   }),
   (req, res) => {
+    const redirectUrl = req.session.returnTo || '/spaces'
     req.flash("success", "Successfully logged in.");
-    res.redirect("/spaces");
+    res.redirect(redirectUrl)
   }
 );
 

@@ -25,5 +25,16 @@
   })
 })()
 </script>
+<!-- flash message back forward issue fix -->
+<script>
+  var perfEntries = performance.getEntriesByType("navigation");
+  for (var i = 0; i < perfEntries.length; i++) {
+      if(perfEntries[i].type === "back_forward"){ 
+          document.getElementById("message").innerText = ""; 
+        console.log(perfEntries)
+      }
+
+  }
+</script>
 </body>
 </html>
