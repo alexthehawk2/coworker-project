@@ -1,4 +1,5 @@
 const express = require('express')
+const { isLoggedIn } = require('../authMiddleware')
 const coWorker = require('../models/coWorker')
 const Review = require('../models/review')
 const AppError = require('../utils/AppError')
@@ -14,7 +15,7 @@ const reviewValidation = (req, res, next) => {
         next();
     }
 }
-router.post('/', reviewValidation, asyncErrorWrapper(async (req, res) => {
+router.post('/', isLoggedIn,reviewValidation, asyncErrorWrapper(async (req, res) => {
     const space = await coWorker.findById(req.params.id)
     let { review } = req.body
     review = new Review(review)
@@ -24,7 +25,7 @@ router.post('/', reviewValidation, asyncErrorWrapper(async (req, res) => {
     req.flash('success','Review Added succesfully')
     res.redirect(`/spaces/${req.params.id}`)
 }))
-router.delete('/:reviewId', asyncErrorWrapper(async (req, res) => {
+router.delete('/:reviewId', isLoggedIn,asyncErrorWrapper(async (req, res) => {
     await coWorker.findByIdAndUpdate(req.params.id, { $pull: { reviews: req.params.reviewId } })
     await Review.findByIdAndDelete(req.params.id)
     req.flash('success', 'Review deleted')

@@ -24,10 +24,12 @@
             <%= space.description %>
           </p>
           <p class="card-text"><b>$<%= space.price %>/day</b></p>
+          <% if(isLoggedIn){%> 
           <a class="btn btn-success" href="/spaces/<%= space._id %>/edit">Edit Space</a>
           <form class="d-inline" action="/spaces/<%= space._id %>?_method=DELETE" method="post">
             <button class="btn btn-danger my-2" type="submit">Delete</button>
           </form>
+          <% } %>
         </div>
       </div>
       <div class="my-2">
@@ -61,9 +63,11 @@
           <div class="card-body">
             <h5 class="card-title">Rating: <%= review.rating %></h5>
             <p class="card-text">Review: <%= review.body %></p>
+            <% if(isLoggedIn){%> 
             <form action="/spaces/<%= space.id %>/reviews/<%= review.id %>?_method=DELETE" method="post">
               <button class="btn btn-danger" type="submit">Delete</button>
             </form>
+            <% } %>
           </div>
         </div>
       <% } %> 

@@ -6,6 +6,10 @@ const asyncErrorWrapper = require("../utils/asyncErrorWrapper");
 const router = express.Router();
 
 router.get("/login", (req, res) => {
+  if(req.isAuthenticated()){
+    req.flash('error', 'You are already signed in!.')
+    return res.redirect('/spaces')
+  }
   res.render("./auth/login");
 });
 router.get("/register", (req, res) => {
