@@ -2,7 +2,7 @@ const axios = require("axios");
 
 module.exports = async function getImage(page) {
   try {
-    const accessKey = "_3Fvqo0jbbyk8pmyOtrNYQOC73Ma0Ml0UfEP8XZhFhw";
+    const accessKey = process.env.IMAGE_API_KEY;
     const endpoint = "https://api.unsplash.com/search/photos";
     const query = `?query=office&page=${page}&per_page=25&client_id=${accessKey}`;
     const path = endpoint + query;

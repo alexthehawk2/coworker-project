@@ -1,10 +1,13 @@
+require("dotenv").config();
 const mongoose = require("mongoose");
 const coworker = require("../models/coworker");
 const { descriptors, places } = require("./seedHelpers");
 const getImage = require("./imageAPI");
 const cities = require("./cities");
 const uri =
-  "mongodb+srv://alexthehawk:alexthehawk090102@cluster0.z6cz7.mongodb.net/coworker?retryWrites=true&w=majority";
+  "mongodb+srv://" +
+  process.env.MONGODB_USERNAME_PASSWORD +
+  "@cluster0.z6cz7.mongodb.net/coworker?retryWrites=true&w=majority";
 mongoose
   .connect(uri)
   .then(console.log("database connected"))
@@ -35,7 +38,7 @@ const seedDb = async (imgArr) => {
         "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Veniam sequi vitae amet soluta alias commodi natus eos dignissimos similique, dolorum obcaecati debitis eius voluptate perspiciatis aliquam rerum aliquid",
       price: price,
       location: `${cities[random].city}, ${cities[random].state}`,
-      spaceOwner: "630e31b1b5f1fb3cc6d46753",
+      spaceOwner: process.env.DEFAULT_SPACE_OWNER,
     });
     await db.save();
     const index = imgArr.indexOf(randomImg);

@@ -1,3 +1,5 @@
+require("dotenv").config();
+console.log();
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -13,7 +15,9 @@ const passport = require("passport");
 const User = require("./models/user");
 
 const uri =
-  "mongodb+srv://alexthehawk:alexthehawk090102@cluster0.z6cz7.mongodb.net/coworker?retryWrites=true&w=majority";
+  "mongodb+srv://" +
+  process.env.MONGODB_USERNAME_PASSWORD +
+  "@cluster0.z6cz7.mongodb.net/coworker?retryWrites=true&w=majority";
 mongoose
   .connect(uri)
   .then(console.log("database connected"))
@@ -28,7 +32,7 @@ app.use(express.static("public"));
 
 const sessionOptions = {
   resave: false,
-  secret: "testsecret",
+  secret: process.env.SESSION_SECRET,
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
@@ -97,6 +101,6 @@ app.use((err, req, res, next) => {
     link: link,
   });
 });
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
   console.log("started on port 3000");
 });
