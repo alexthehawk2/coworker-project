@@ -1,13 +1,4 @@
 <%- include('partials/header'); -%>
-<!-- toast message -->
-<div class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
-  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-header">
-      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div id="message" class="toast-body"><%= success %></div>
-  </div>
-</div>
 <!--body  -->
   <div class="row">
     <div class="col-6">
@@ -24,13 +15,19 @@
             <%= space.description %>
           </p>
           <p class="card-text"><b>$<%= space.price %>/day</b></p>
-          <% if(isLoggedIn){%> 
+          <% if(space.spaceOwner.id===userInfo.id){%> 
           <a class="btn btn-success" href="/spaces/<%= space._id %>/edit">Edit Space</a>
           <form class="d-inline" action="/spaces/<%= space._id %>?_method=DELETE" method="post">
             <button class="btn btn-danger my-2" type="submit">Delete</button>
           </form>
-          <% } %>
+          <% } %>  
         </div>
+        <div class="card-footer">
+          Space owned by 
+          <% if(space.spaceOwner){%> 
+          <%= space.spaceOwner.username %> 
+          <% } %>
+        </div>  
       </div>
       <div class="my-2">
         <a class="btn btn-primary" href="/spaces">< All spaces</a>
@@ -65,7 +62,7 @@
           <div class="card-body">
             <h5 class="card-title">Rating: <%= review.rating %></h5>
             <p class="card-text">Review: <%= review.body %></p>
-            <% if(isLoggedIn){%> 
+            <% if(review.reviewedBy===userInfo.id){%> 
             <form action="/spaces/<%= space.id %>/reviews/<%= review.id %>?_method=DELETE" method="post">
               <button class="btn btn-danger" type="submit">Delete</button>
             </form>
@@ -76,7 +73,7 @@
     </div>   
     </div>
   </div>
-
+  <% if(isLoggedIn){%> 
   <script type="text/javascript" charset="utf-8">
     let myRange = document.querySelector('#myRange');
     let myValue = document.querySelector('#myValue');
@@ -86,5 +83,9 @@
       myValue.innerHTML = myRange.value + ' ' + myUnits;
     };
   </script>
+  <% } %> 
+<%- include('partials/toast') %>
+<% if(isLoggedIn){%> 
   <script src="/utils/toast.js"></script>
-  <%- include('partials/footer'); -%>
+  <% } %> 
+<%- include('partials/footer'); -%>

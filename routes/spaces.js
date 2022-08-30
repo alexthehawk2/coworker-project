@@ -4,7 +4,7 @@ const AppError = require("../utils/AppError");
 const connectEnsureLogin = require("connect-ensure-login");
 const asyncErrorWrapper = require("../utils/asyncErrorWrapper");
 const { joiCoworkerSchema } = require("../validators/validator");
-const {isLoggedIn}= require('../authMiddleware')
+const { isLoggedIn, isOwner } = require("../authMiddleware");
 const router = express.Router();
 
 const spaceValidation = (req, res, next) => {
@@ -20,11 +20,11 @@ router.get(
   "/",
   asyncErrorWrapper(async (req, res) => {
     const spaces = await coWorker.find();
-    console.log(req.session)
+    console.log(req.session);
     res.render("spaces", { title: "Coworking Space Locations", spaces });
   })
 );
-router.get("/new", isLoggedIn,(req, res) => {
+router.get("/new", isLoggedIn, (req, res) => {
   res.render("new", { title: "Create new space" });
 });
 router.post(
@@ -38,6 +38,7 @@ router.post(
       image: req.body.imageUrl,
       description: req.body.description,
       price: req.body.price,
+      spaceOwner: req.user._id,
     });
     await space.save();
     req.flash("success", "Successfully created new space");
@@ -47,7 +48,12 @@ router.post(
 router.get(
   "/:id",
   asyncErrorWrapper(async (req, res, next) => {
-    const space = await coWorker.findById(req.params.id).populate("reviews");
+    console.log(req.session);
+    const space = await coWorker
+      .findById(req.params.id)
+      .populate("reviews")
+      .populate("spaceOwner");
+
     if (!space) {
       req.flash("error", "Space not found!");
       return res.redirect("/spaces");
@@ -58,6 +64,7 @@ router.get(
 router.get(
   "/:id/edit",
   isLoggedIn,
+  isOwner,
   asyncErrorWrapper(async (req, res, next) => {
     const id = req.params.id;
     const space = await coWorker.findById(id);
@@ -72,6 +79,7 @@ router.get(
 router.put(
   "/:id",
   isLoggedIn,
+  isOwner,
   spaceValidation,
   asyncErrorWrapper(async (req, res, next) => {
     const space = {
@@ -89,6 +97,7 @@ router.put(
 router.delete(
   "/:id",
   isLoggedIn,
+  isOwner,
   asyncErrorWrapper(async (req, res) => {
     await coWorker.findByIdAndDelete(req.params.id);
     req.flash("success", "Deleted successfully");

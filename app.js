@@ -5,7 +5,7 @@ const methodOverride = require("method-override");
 const session = require("express-session");
 const flash = require("connect-flash");
 const AppError = require("./utils/AppError");
-const LocalStrategy = require('passport-local');
+const LocalStrategy = require("passport-local");
 const spaces = require("./routes/spaces");
 const reviews = require("./routes/review");
 const auth = require("./routes/auth");
@@ -37,16 +37,18 @@ app.use(session(sessionOptions));
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.use(User.createStrategy())
+passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use(flash());
 app.use((req, res, next) => {
-  if(req.isAuthenticated()){
-    res.locals.isLoggedIn = true
-  }else {
-    res.locals.isLoggedIn = false
+  if (req.isAuthenticated()) {
+    res.locals.isLoggedIn = true;
+    res.locals.userInfo = req.user;
+  } else {
+    res.locals.isLoggedIn = false;
+    res.locals.userInfo = false;
   }
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
