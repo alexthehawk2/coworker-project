@@ -3,9 +3,15 @@ const coworker = require("../models/coworker");
 const { descriptors, places } = require("./seedHelpers");
 const getImage = require("./imageAPI");
 const cities = require("./cities");
-mongoose.connect("mongodb://localhost:27017/coworker").then(() => {
-  console.log("database connected");
-});
+const uri =
+  "mongodb+srv://alexthehawk:alexthehawk090102@cluster0.z6cz7.mongodb.net/coworker?retryWrites=true&w=majority";
+mongoose
+  .connect(uri)
+  .then(console.log("database connected"))
+  .catch((err) => {
+    console.log("Error ", err);
+  });
+
 let imgs = getImage(1).then((data) => {
   imgs = data;
   console.log(imgs.length);
@@ -29,6 +35,7 @@ const seedDb = async (imgArr) => {
         "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Veniam sequi vitae amet soluta alias commodi natus eos dignissimos similique, dolorum obcaecati debitis eius voluptate perspiciatis aliquam rerum aliquid",
       price: price,
       location: `${cities[random].city}, ${cities[random].state}`,
+      spaceOwner: "630e31b1b5f1fb3cc6d46753",
     });
     await db.save();
     const index = imgArr.indexOf(randomImg);
@@ -36,6 +43,7 @@ const seedDb = async (imgArr) => {
       imgArr.splice(index, 1);
     }
   }
+  mongoose.connection.close();
 };
 const deleteDB = async () => {
   await coworker.deleteMany({});

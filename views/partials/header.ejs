@@ -40,13 +40,14 @@
                 <a class="nav-link" href="/register">Register</a>
               </li>
               <% } %>
-              <% if(isLoggedIn){%> 
-              <li class="nav-item">
-                <a style="color: red;" class="nav-link" href="/logout">Logout</a>
-              </li>
-              <% } %> 
             </div>
           </div>
+          <% if(isLoggedIn){%> 
+          <div class="navbar justify-content-end">
+            <span class="nav-item text-bg-dark">Profile <b><%= userInfo.username %> </b></span>
+            <a style="color: red;margin: 0px 10px;" class="nav-link" href="/logout">Logout</a>
+          </div>
+          <% } %> 
         </div>
     </nav>
     <main class="container mt-5">

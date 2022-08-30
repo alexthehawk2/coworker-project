@@ -12,10 +12,14 @@ const auth = require("./routes/auth");
 const passport = require("passport");
 const User = require("./models/user");
 
-mongoose.connect("mongodb://localhost:27017/coworker").then(() => {
-  console.log("database connected");
-});
-
+const uri =
+  "mongodb+srv://alexthehawk:alexthehawk090102@cluster0.z6cz7.mongodb.net/coworker?retryWrites=true&w=majority";
+mongoose
+  .connect(uri)
+  .then(console.log("database connected"))
+  .catch((err) => {
+    console.log("Error ", err);
+  });
 app.set("view engine", "ejs");
 
 app.use(express.urlencoded({ extended: true }));

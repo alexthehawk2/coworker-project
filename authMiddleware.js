@@ -23,7 +23,7 @@ module.exports.isOwner = async (req, res, next) => {
 module.exports.isReviewOwner = async (req, res, next) => {
   const { reviewId, id } = req.params;
   const review = await Review.findById(reviewId).populate("reviewedBy");
-  if (!review || req.user.id !== review.reviewedBy) {
+  if (!review || req.user.id !== review.reviewedBy.id) {
     req.flash("error", "You don't have permission to perform this action");
     return res.redirect(`/spaces/${id}`);
   }

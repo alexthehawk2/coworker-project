@@ -27,7 +27,7 @@ router.post(
     await space.save();
     review.reviewedBy = req.user.id;
     await review.save();
-    req.flash("success", "Review Added succesfully");
+    req.flash("success", "Review Added successfully");
     res.redirect(`/spaces/${req.params.id}`);
   })
 );
