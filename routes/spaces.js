@@ -1,5 +1,5 @@
 const express = require("express");
-const coWorker = require("../models/coWorker");
+const coWorker = require("../models/coworker.js");
 const AppError = require("../utils/AppError");
 const connectEnsureLogin = require("connect-ensure-login");
 const asyncErrorWrapper = require("../utils/asyncErrorWrapper");

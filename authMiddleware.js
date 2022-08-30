@@ -1,4 +1,4 @@
-const coWorker = require("./models/coWorker");
+const coWorker = require("./models/coworker");
 const Review = require("./models/review");
 
 module.exports.isLoggedIn = (req, res, next) => {

@@ -1,6 +1,6 @@
 const express = require("express");
 const { isLoggedIn, isReviewOwner } = require("../authMiddleware");
-const coWorker = require("../models/coWorker");
+const coWorker = require("../models/coworker");
 const Review = require("../models/review");
 const AppError = require("../utils/AppError");
 const asyncErrorWrapper = require("../utils/asyncErrorWrapper");
