@@ -5,7 +5,6 @@ const connectEnsureLogin = require("connect-ensure-login");
 const asyncErrorWrapper = require("../utils/asyncErrorWrapper");
 const { joiCoworkerSchema } = require("../validators/validator");
 const { isLoggedIn, isOwner } = require("../authMiddleware");
-const { populate } = require("../models/coWorker");
 const router = express.Router();
 
 const spaceValidation = (req, res, next) => {
