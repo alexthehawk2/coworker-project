@@ -1,5 +1,6 @@
 const coWorker = require("./models/coworker");
 const Review = require("./models/review");
+const asyncErrorWrapper = require("./utils/asyncErrorWrapper");
 
 module.exports.isLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) {
@@ -10,7 +11,7 @@ module.exports.isLoggedIn = (req, res, next) => {
   next();
 };
 
-module.exports.isOwner = async (req, res, next) => {
+module.exports.isOwner = asyncErrorWrapper(async (req, res, next) => {
   const { id } = req.params;
   const space = await coWorker.findById(id).populate("spaceOwner");
   if (space && space.spaceOwner.id !== req.user.id) {
@@ -19,8 +20,8 @@ module.exports.isOwner = async (req, res, next) => {
     return res.redirect(`/spaces/${space.id}`);
   }
   next();
-};
-module.exports.isReviewOwner = async (req, res, next) => {
+});
+module.exports.isReviewOwner = asyncErrorWrapper(async (req, res, next) => {
   const { reviewId, id } = req.params;
   const review = await Review.findById(reviewId).populate("reviewedBy");
   if (!review || req.user.id !== review.reviewedBy.id) {
@@ -28,4 +29,4 @@ module.exports.isReviewOwner = async (req, res, next) => {
     return res.redirect(`/spaces/${id}`);
   }
   next();
-};
+});
