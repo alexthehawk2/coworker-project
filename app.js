@@ -13,7 +13,9 @@ const reviews = require("./routes/review");
 const auth = require("./routes/auth");
 const passport = require("passport");
 const User = require("./models/user");
-
+const upload = require("./uploadMiddleware");
+const Resize = require("./utils/resize");
+const path = require("path");
 const uri =
   "mongodb+srv://" +
   process.env.MONGODB_USERNAME_PASSWORD +
@@ -67,6 +69,18 @@ app.get("/", (req, res) => {
   res.redirect("/spaces");
 });
 //auth route
+app.get("/upload", (req, res) => {
+  res.render("upload", { title: "Upload" });
+});
+app.post("/upload", upload.single("image"), async (req, res) => {
+  const imagePath = path.join(__dirname, "/public/images");
+  const fileUpload = new Resize(imagePath);
+  if (!req.file) {
+    res.status(401).json({ error: "Please provide an image" });
+  }
+  const filename = await fileUpload.save(req.file.buffer);
+  return res.status(200).json({ name: filename });
+});
 app.use("/", auth);
 //space route
 app.use("/spaces", spaces);

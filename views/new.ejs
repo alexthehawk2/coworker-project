@@ -1,85 +1,52 @@
 <%- include('partials/header'); -%>
-<div class="row">
-  <h1 class="text-center">New Space</h1>
-  <div class="col-6 offset-3">
-    <form action="/spaces" method="post" class="needs-validation" novalidate>
-      <div>
-        <label class="form-label" for="name">Name </label>
-        <input
-          class="form-control"
-          type="text"
-          name="name"
-          id=""
-          required
-          placeholder="Enter Your Coworking Space Name"
-        />
-        <div class="valid-feedback">Looks good.</div>
-      </div>
-      <div>
-        <label class="form-label" for="city">City </label>
-        <input
-          class="form-control"
-          type="text"
-          name="city"
-          required
-          placeholder="Enter City Name"
-        />
-        <div class="valid-feedback">Looks good.</div>
-      </div>
-      <div>
-        <label class="form-label" for="state">State </label>
-        <input
-          class="form-control"
-          type="text"
-          name="state"
-          required
-          placeholder="Enter State Name"
-        />
-        <div class="valid-feedback">Looks good.</div>
-      </div>
-      <div>
-        <label class="form-label" for="imageUrl">Image URL </label>
-        <input
-          class="form-control"
-          type="text"
-          name="imageUrl"
-          required
-          placeholder="https://example.com/image"
-        />
-        <div class="valid-feedback">Looks good.</div>
-      </div>
-      <div>
-        <label class="form-label" for="description">Description</label>
-        <textarea
-          class="form-control"
-          name="description"
-          id=""
-          cols="30"
-          rows="3"
-          required
-          placeholder="Enter A Brief Description About Your Coworking Space"
-        ></textarea>
-        <div class="valid-feedback">Looks good.</div>
-      </div>
-      <div class="col-auto">
-        <label class="form-label" for="autoSizingInputGroup">Price</label>
-        <div class="input-group">
-          <div class="input-group-text">$</div>
-          <input
-            type="number"
-            class="form-control"
-            id="autoSizingInputGroup"
-            placeholder="0.00"
-            name="price"
-            required
-          />
+  <div class="row">
+    <h1 class="text-center">New Space</h1>
+    <div class="col-6 offset-3">
+      <form action="/spaces" method="post" class="needs-validation" novalidate>
+        <div>
+          <label class="form-label" for="name">Name </label>
+          <input class="form-control" type="text" name="name" id="" required
+            placeholder="Enter Your Coworking Space Name" />
           <div class="valid-feedback">Looks good.</div>
         </div>
-      </div>
-      <div class="my-2">
-        <button class="btn btn-success" type="submit">Create</button>
-      </div>
-    </form>
+        <div>
+          <label class="form-label" for="city">City </label>
+          <input class="form-control" type="text" name="city" required placeholder="Enter City Name" />
+          <div class="valid-feedback">Looks good.</div>
+        </div>
+        <div>
+          <label class="form-label" for="state">State </label>
+          <input class="form-control" type="text" name="state" required placeholder="Enter State Name" />
+          <div class="valid-feedback">Looks good.</div>
+        </div>
+        <!-- <div>
+          <label class="form-label" for="imageUrl">Image URL </label>
+          <input class="form-control" type="text" name="imageUrl" required placeholder="https://example.com/image" />
+          <div class="valid-feedback">Looks good.</div>
+        </div> -->
+        <div>
+          <label class="form-label" for="imageUrl">Space Image </label>
+          <input class="form-control" type="file" name="image" />
+        </div>
+        <div>
+          <label class="form-label" for="description">Description</label>
+          <textarea class="form-control" name="description" id="" cols="30" rows="3" required
+            placeholder="Enter A Brief Description About Your Coworking Space"></textarea>
+          <div class="valid-feedback">Looks good.</div>
+        </div>
+        <div class="col-auto">
+          <label class="form-label" for="autoSizingInputGroup">Price</label>
+          <div class="input-group">
+            <div class="input-group-text">$</div>
+            <input type="number" class="form-control" id="autoSizingInputGroup" placeholder="0.00" name="price"
+              required />
+            <div class="valid-feedback">Looks good.</div>
+          </div>
+        </div>
+        <div class="my-2">
+          <button class="btn btn-success" type="submit">Create</button>
+        </div>
+      </form>
+    </div>
   </div>
-</div>
-<%- include('partials/footer'); -%>
+  <%- include('partials/footer'); -%>
