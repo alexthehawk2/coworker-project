@@ -39,7 +39,13 @@ router.get("/new", isLoggedIn, getNewSpaceForm);
 router
   .route("/:id")
   .get(asyncErrorWrapper(showSpace))
-  .put(isLoggedIn, isOwner, spaceValidation, asyncErrorWrapper(editSpace))
+  .put(
+    isLoggedIn,
+    upload.single("image"),
+    isOwner,
+    spaceValidation,
+    asyncErrorWrapper(editSpace)
+  )
   .delete(isLoggedIn, isOwner, asyncErrorWrapper(deleteSpace));
 router.get("/:id/edit", isLoggedIn, isOwner, asyncErrorWrapper(editSpaceForm));
 

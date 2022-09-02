@@ -67,16 +67,55 @@ module.exports.editSpaceForm = async (req, res, next) => {
   res.render("edit", { title: `Edit ${space.title}`, space, locArr });
 };
 module.exports.editSpace = async (req, res, next) => {
-  const space = {
-    title: req.body.name,
-    location: `${req.body.city}, ${req.body.state}`,
-    price: req.body.price,
-    description: req.body.description,
-    image: req.body.imageUrl,
-  };
-  await coWorker.findByIdAndUpdate(req.params.id, space);
-  req.flash("success", "Edited successfully");
-  res.redirect(`/spaces/${req.params.id}`);
+  if (!req.file) {
+    const space = {
+      title: req.body.name,
+      location: `${req.body.city}, ${req.body.state}`,
+      price: req.body.price,
+      description: req.body.description,
+      image: req.body.imageUrl,
+    };
+    await coWorker.findByIdAndUpdate(req.params.id, space);
+    req.flash("success", "Edited successfully");
+    res.redirect(`/spaces/${req.params.id}`);
+  } else {
+    try {
+      const imagePath = path.join(__dirname, "../public/images");
+      const fileUpload = new Resize(imagePath);
+      const filename = await fileUpload.save(req.file.buffer);
+      const uploadImagePath =
+        path.join(__dirname, "../public/images/") + filename;
+      const response = await uploadImage(uploadImagePath);
+      await generatePublicUrl(response.id);
+      const imageUrl =
+        "https://drive.google.com/uc?export=view&id=" + response.id;
+      const space = new coWorker({
+        title: req.body.name,
+        location: `${req.body.city}, ${req.body.state}`,
+        image: imageUrl,
+        description: req.body.description,
+        price: req.body.price,
+        spaceOwner: req.user._id,
+      });
+      await space.save();
+      req.flash("success", "Successfully created new space");
+      res.redirect(`/spaces/${space.id}`);
+      fs.unlinkSync(uploadImagePath);
+    } catch (error) {
+      res.render("error", { err: error, title: "error" });
+    }
+  }
+  // const space = {
+
+  //   title: req.body.name,
+  //   location: `${req.body.city}, ${req.body.state}`,
+  //   price: req.body.price,
+  //   description: req.body.description,
+  //   image: req.body.imageUrl,
+  // };
+  // await coWorker.findByIdAndUpdate(req.params.id, space);
+  // req.flash("success", "Edited successfully");
+  // res.redirect(`/spaces/${req.params.id}`);
 };
 module.exports.deleteSpace = async (req, res) => {
   await coWorker.findByIdAndDelete(req.params.id);
