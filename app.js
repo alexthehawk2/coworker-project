@@ -75,15 +75,7 @@ app.use("/spaces/:id/reviews", reviews);
 app.get("/upload", (req, res) => {
   res.render("upload", { title: "Upload" });
 });
-app.post("/upload", upload.single("image"), async (req, res) => {
-  const imagePath = path.join(__dirname, "/public/images");
-  const fileUpload = new Resize(imagePath);
-  if (!req.file) {
-    res.status(401).json({ error: "Please provide an image" });
-  }
-  const filename = await fileUpload.save(req.file.buffer);
-  return res.status(200).json({ name: filename });
-});
+
 //error handling middlewares
 app.all("*", (req, res, next) => {
   next(new AppError("Page not found!", 404));
