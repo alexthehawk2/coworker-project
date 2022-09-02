@@ -1,5 +1,4 @@
 require("dotenv").config();
-console.log();
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -7,7 +6,6 @@ const methodOverride = require("method-override");
 const session = require("express-session");
 const flash = require("connect-flash");
 const AppError = require("./utils/AppError");
-const LocalStrategy = require("passport-local");
 const spaces = require("./routes/spaces");
 const reviews = require("./routes/review");
 const auth = require("./routes/auth");
@@ -69,18 +67,6 @@ app.get("/", (req, res) => {
   res.redirect("/spaces");
 });
 //auth route
-app.get("/upload", (req, res) => {
-  res.render("upload", { title: "Upload" });
-});
-app.post("/upload", upload.single("image"), async (req, res) => {
-  const imagePath = path.join(__dirname, "/public/images");
-  const fileUpload = new Resize(imagePath);
-  if (!req.file) {
-    res.status(401).json({ error: "Please provide an image" });
-  }
-  const filename = await fileUpload.save(req.file.buffer);
-  return res.status(200).json({ name: filename });
-});
 app.use("/", auth);
 //space route
 app.use("/spaces", spaces);

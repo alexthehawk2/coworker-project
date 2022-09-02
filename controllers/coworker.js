@@ -1,5 +1,9 @@
+const fs = require("fs");
 const coWorker = require("../models/coworker");
-
+const path = require("path");
+const Resize = require("../utils/resize");
+const { uploadImage, generatePublicUrl } = require("../utils/googleauth");
+const AppError = require("../utils/AppError");
 module.exports.getSpaces = async (req, res) => {
   const spaces = await coWorker.find();
   console.log(req.session);
@@ -9,17 +13,35 @@ module.exports.getNewSpaceForm = (req, res) => {
   res.render("new", { title: "Create new space" });
 };
 module.exports.postSpaces = async (req, res, next) => {
-  const space = new coWorker({
-    title: req.body.name,
-    location: `${req.body.city}, ${req.body.state}`,
-    image: req.body.imageUrl,
-    description: req.body.description,
-    price: req.body.price,
-    spaceOwner: req.user._id,
-  });
-  await space.save();
-  req.flash("success", "Successfully created new space");
-  res.redirect(`/spaces/${space.id}`);
+  const imagePath = path.join(__dirname, "../public/images");
+  const fileUpload = new Resize(imagePath);
+  if (!req.file) {
+    throw new AppError("Please Provide an image", 400);
+  } else {
+    try {
+      const filename = await fileUpload.save(req.file.buffer);
+      const uploadImagePath =
+        path.join(__dirname, "../public/images/") + filename;
+      const response = await uploadImage(uploadImagePath);
+      await generatePublicUrl(response.id);
+      const imageUrl =
+        "https://drive.google.com/uc?export=view&id=" + response.id;
+      const space = new coWorker({
+        title: req.body.name,
+        location: `${req.body.city}, ${req.body.state}`,
+        image: imageUrl,
+        description: req.body.description,
+        price: req.body.price,
+        spaceOwner: req.user._id,
+      });
+      await space.save();
+      req.flash("success", "Successfully created new space");
+      res.redirect(`/spaces/${space.id}`);
+      fs.unlinkSync(uploadImagePath);
+    } catch (error) {
+      res.render("error", { err: error, title: "error" });
+    }
+  }
 };
 module.exports.showSpace = async (req, res, next) => {
   console.log(req.session);

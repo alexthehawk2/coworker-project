@@ -2,7 +2,7 @@
   <div class="row">
     <h1 class="text-center">New Space</h1>
     <div class="col-6 offset-3">
-      <form action="/spaces" method="post" class="needs-validation" novalidate>
+      <form action="/spaces" method="post" class="needs-validation" novalidate enctype="multipart/form-data">
         <div>
           <label class="form-label" for="name">Name </label>
           <input class="form-control" type="text" name="name" id="" required
@@ -19,14 +19,9 @@
           <input class="form-control" type="text" name="state" required placeholder="Enter State Name" />
           <div class="valid-feedback">Looks good.</div>
         </div>
-        <!-- <div>
-          <label class="form-label" for="imageUrl">Image URL </label>
-          <input class="form-control" type="text" name="imageUrl" required placeholder="https://example.com/image" />
-          <div class="valid-feedback">Looks good.</div>
-        </div> -->
         <div>
           <label class="form-label" for="imageUrl">Space Image </label>
-          <input class="form-control" type="file" name="image" />
+          <input class="form-control" type="file" name="image" required/>
         </div>
         <div>
           <label class="form-label" for="description">Description</label>
