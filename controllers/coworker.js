@@ -2,11 +2,10 @@ const fs = require("fs");
 const coWorker = require("../models/coworker");
 const path = require("path");
 const Resize = require("../utils/resize");
-const { uploadImage, generatePublicUrl } = require("../utils/googleauth");
 const AppError = require("../utils/AppError");
+const { imageUpload } = require("../utils/cloundinaryauth");
 module.exports.getSpaces = async (req, res) => {
   const spaces = await coWorker.find();
-  console.log(req.session);
   res.render("spaces", { title: "Coworking Space Locations", spaces });
 };
 module.exports.getNewSpaceForm = (req, res) => {
@@ -22,14 +21,11 @@ module.exports.postSpaces = async (req, res, next) => {
       const filename = await fileUpload.save(req.file.buffer);
       const uploadImagePath =
         path.join(__dirname, "../public/images/") + filename;
-      const response = await uploadImage(uploadImagePath);
-      await generatePublicUrl(response.id);
-      const imageUrl =
-        "https://drive.google.com/uc?export=view&id=" + response.id;
+      const responseUrl = await imageUpload(uploadImagePath)
       const space = new coWorker({
         title: req.body.name,
         location: `${req.body.city}, ${req.body.state}`,
-        image: imageUrl,
+        image: responseUrl,
         description: req.body.description,
         price: req.body.price,
         spaceOwner: req.user._id,
@@ -44,7 +40,6 @@ module.exports.postSpaces = async (req, res, next) => {
   }
 };
 module.exports.showSpace = async (req, res, next) => {
-  console.log(req.session);
   const space = await coWorker
     .findById(req.params.id)
     .populate("spaceOwner")
@@ -105,17 +100,6 @@ module.exports.editSpace = async (req, res, next) => {
       res.render("error", { err: error, title: "error" });
     }
   }
-  // const space = {
-
-  //   title: req.body.name,
-  //   location: `${req.body.city}, ${req.body.state}`,
-  //   price: req.body.price,
-  //   description: req.body.description,
-  //   image: req.body.imageUrl,
-  // };
-  // await coWorker.findByIdAndUpdate(req.params.id, space);
-  // req.flash("success", "Edited successfully");
-  // res.redirect(`/spaces/${req.params.id}`);
 };
 module.exports.deleteSpace = async (req, res) => {
   await coWorker.findByIdAndDelete(req.params.id);

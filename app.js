@@ -98,6 +98,10 @@ app.use((err, req, res, next) => {
     statusCode = 404;
     err.message = `${err.path === "reviews" ? "Review" : "Space"} not found`;
   }
+  if (err.name === "MulterError") {
+    statusCode = 400;
+    err.message = `Image too large(image file size should lower than 10mb)`;
+  }
   res.status(statusCode).render("error", {
     title: `Oh no! ${err.statusCode} Error`,
     err,

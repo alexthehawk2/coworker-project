@@ -18,7 +18,6 @@ const { object } = require("joi");
 const router = express.Router();
 
 const spaceValidation = (req, res, next) => {
-  console.log(req.body);
   const validationResult = joiCoworkerSchema.validate(req.body);
   if (validationResult.error) {
     throw new AppError(`${validationResult.error.details[0].message}`, 400);
@@ -29,8 +28,7 @@ const spaceValidation = (req, res, next) => {
 router
   .route("/")
   .get(asyncErrorWrapper(getSpaces))
-  .post(
-    isLoggedIn,
+  .post(isLoggedIn,
     upload.single("image"),
     spaceValidation,
     asyncErrorWrapper(postSpaces)
