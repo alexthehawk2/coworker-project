@@ -47,13 +47,17 @@
       </div>
       <div>
         <label class="form-label" for="imageUrl">Current Image</label>
-        <div>
-        <img style="height: 200px;width:200px;" id="space-image" src="<%= space.image %>" alt="">
-        </div>
+        <% for(let image of space.image){ %>
+          <div>
+            <img style="height: 200px;width:200px;" id="space-image" src="<%= image.url %>" alt="">
+            <label for="delete">Delete ? </label>
+            <input type="checkbox" name="deleteImages[]" value="<%= image.filename %>">
+            </div>
+          <% } %>  
       </div>
       <div>
         <label class="form-label" for="image">Change Image</label>
-        <input id="imageInp" type="file" class="form-control" name="image">
+        <input id="imageInp" type="file" class="form-control" name="image" multiple>
       </div>
       <div>
         <label class="form-label" for="description">Description </label>
@@ -90,15 +94,4 @@
     <a href="/spaces">Cancel</a>
   </div>
 </div>
-<script>
-  const image = document.getElementById('space-image')
-  const imgInp = document.getElementById('imageInp')
-  imgInp.onchange = evt => {
-  const [file] = imgInp.files
-  if (file) {
-    console.log(image)
-    image.src = URL.createObjectURL(file)
-  }
-}
-</script>
 <%- include('partials/footer'); -%>

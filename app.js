@@ -11,9 +11,6 @@ const reviews = require("./routes/review");
 const auth = require("./routes/auth");
 const passport = require("passport");
 const User = require("./models/user");
-const upload = require("./uploadMiddleware");
-const Resize = require("./utils/resize");
-const path = require("path");
 const uri =
   "mongodb+srv://" +
   process.env.MONGODB_USERNAME_PASSWORD +

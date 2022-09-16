@@ -6,6 +6,7 @@ module.exports.joiCoworkerSchema = Joi.object({
   state: Joi.string().required(),
   description: Joi.string().required(),
   price: Joi.number().required().min(0),
+  deleteImages: Joi.array(),
 });
 
 module.exports.joiReviewSchema = Joi.object({

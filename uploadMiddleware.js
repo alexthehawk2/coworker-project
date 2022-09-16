@@ -1,9 +1,7 @@
 const multer = require("multer");
-
+const { storage } = require("./utils/cloundinaryauth");
 const upload = multer({
-  limits: {
-    fileSize: 9.5 * 1024 * 1024,
-  },
+  storage: storage,
 });
 
 module.exports = upload;

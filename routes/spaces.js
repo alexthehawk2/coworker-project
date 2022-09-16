@@ -28,8 +28,9 @@ const spaceValidation = (req, res, next) => {
 router
   .route("/")
   .get(asyncErrorWrapper(getSpaces))
-  .post(isLoggedIn,
-    upload.single("image"),
+  .post(
+    isLoggedIn,
+    upload.array("image"),
     spaceValidation,
     asyncErrorWrapper(postSpaces)
   );
@@ -39,7 +40,7 @@ router
   .get(asyncErrorWrapper(showSpace))
   .put(
     isLoggedIn,
-    upload.single("image"),
+    upload.array("image"),
     isOwner,
     spaceValidation,
     asyncErrorWrapper(editSpace)

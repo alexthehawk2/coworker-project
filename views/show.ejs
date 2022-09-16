@@ -3,7 +3,26 @@
   <div class="row">
     <div class="col-6">
       <div class="card">
-        <img src="<%= space.image %>" alt="space-image" />
+        <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            <% for(let image of space.image) {%>
+              <div class="carousel-item">
+              <img class="d-block w-100" src="<%= image.url %>" alt="space-image" />
+              </div>
+              <% } %>
+          </div>
+          <% if(space.image.length>1){ %> 
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+          <% } %> 
+        </div>
+        
         <div class="card-body">
           <h5 class="card-title">
             <%= title %>
@@ -37,12 +56,6 @@
       <% if(isLoggedIn){%> 
       <h3>Leave A Review</h3>
       <form action="/spaces/<%= space.id %>/reviews" class="needs-validation" method="post" novalidate>
-        <!-- <div>
-          <label for="review[rating]" class="form-label">Rating</label>
-          <input type="range" class="form-range" id="myRange" max="5" min="1" name="review[rating]">
-          <div class="text-center" id="myValue"></div>
-        </div> -->
-
         <fieldset class="starability-basic">
           <input type="radio" id="first-rate1" name="review[rating]" value="1" />
           <label for="first-rate1" title="Terrible">1 star</label>
@@ -100,8 +113,12 @@
     };
   </script>
   <% } %> 
+  <script>
+    const firstImage = document.getElementsByClassName('carousel-item')[0]
+    firstImage.classList.add('active')
+  </script>
 <%- include('partials/toast') %>
-<% if(isLoggedIn){%> 
+<% if(isLoggedIn){%>
   <script src="/utils/toast.js"></script>
   <% } %> 
 <%- include('partials/footer'); -%>

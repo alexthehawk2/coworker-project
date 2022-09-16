@@ -3,7 +3,12 @@ const Schema = mongoose.Schema;
 const Review = require("./review");
 const coworkerSchema = new Schema({
   title: String,
-  image: String,
+  image: [
+    {
+      url: String,
+      filename: String,
+    },
+  ],
   price: {
     type: Number,
   },
