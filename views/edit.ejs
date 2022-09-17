@@ -47,13 +47,13 @@
       </div>
       <div>
         <label class="form-label" for="imageUrl">Current Image</label>
-        <% for(let image of space.image){ %>
+        <% space.image.forEach((img)=>{ %> 
           <div>
-            <img style="height: 200px;width:200px;" id="space-image" src="<%= image.url %>" alt="">
+            <img style="height: 200px;width:200px;" id="space-image" src="<%= img.thumbnail %>" alt="">
             <label for="delete">Delete ? </label>
-            <input type="checkbox" name="deleteImages[]" value="<%= image.filename %>">
+            <input type="checkbox" name="deleteImages[]" value="<%= img.filename %>">
             </div>
-          <% } %>  
+          <% }) %> 
       </div>
       <div>
         <label class="form-label" for="image">Change Image</label>

@@ -1,5 +1,6 @@
 const coWorker = require("../models/coworker");
 const path = require("path");
+const cloudinary = require('cloudinary')
 const AppError = require("../utils/AppError");
 const { imageUpload } = require("../utils/cloundinaryauth");
 const coworker = require("../models/coworker");
@@ -81,7 +82,7 @@ module.exports.editSpace = async (req, res, next) => {
     price: req.body.price,
     description: req.body.description,
   };
-  if (req.files) {
+  
     const newSpace = await coWorker.findByIdAndUpdate(req.params.id, space);
     const newImages = await newSpace.image.concat(
       req.files.map((f) => ({
@@ -90,17 +91,30 @@ module.exports.editSpace = async (req, res, next) => {
       }))
     );
     newSpace.image = newImages;
+    await newSpace.save();
     if (req.body.deleteImages) {
+      for(let filename of req.body.deleteImages){
+        cloudinary.v2.uploader.destroy(filename)
+      }
       await newSpace.updateOne({
         $pull: { image: { filename: { $in: req.body.deleteImages } } },
       });
     }
-    await newSpace.save();
-  }
+    
+  
   req.flash("success", "Edited successfully");
   res.redirect(`/spaces/${req.params.id}`);
 };
 module.exports.deleteSpace = async (req, res) => {
+  const space = await coWorker.findById(req.params.id)
+  const imageDelete = []
+  for(let image of space.image){
+    imageDelete.push(image.filename)
+  }
+
+  for(let filename of imageDelete){
+    cloudinary.v2.uploader.destroy(filename)
+  }
   await coWorker.findByIdAndDelete(req.params.id);
   req.flash("success", "Deleted successfully");
   res.redirect("/spaces");
