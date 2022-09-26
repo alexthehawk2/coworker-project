@@ -5,10 +5,10 @@ const Review = require("./review");
 imageSchema = new Schema({
   url: String,
   filename: String,
-})
-imageSchema.virtual('thumbnail').get(function(){
-  return this.url.replace('/upload', '/upload/w_400')
-})
+});
+imageSchema.virtual("thumbnail").get(function () {
+  return this.url.replace("/upload", "/upload/w_400");
+});
 
 const coworkerSchema = new Schema({
   title: String,
@@ -21,6 +21,17 @@ const coworkerSchema = new Schema({
   spaceOwner: {
     type: Schema.Types.ObjectId,
     ref: "User",
+  },
+  geometry: {
+    type: {
+      type: String,
+      enum: ["Point"],
+      required: true,
+    },
+    coordinates: {
+      type: [Number],
+      required: true,
+    },
   },
   reviews: [
     {

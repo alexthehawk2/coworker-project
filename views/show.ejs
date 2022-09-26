@@ -1,7 +1,13 @@
 <%- include('partials/header'); -%>
+<head>
+  <script src='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css' rel='stylesheet' />    
+</head>
+
 <!--body  -->
   <div class="row">
     <div class="col-6">
+      <div id='map' class="mb-2" style='width: 100%; height: 300px;'></div>
       <div class="card">
         <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
           <div class="carousel-inner">
@@ -121,4 +127,23 @@
 <% if(isLoggedIn){%>
   <script src="/utils/toast.js"></script>
   <% } %> 
+  <% if(space){%> 
+  <script>
+    const center =[<%= space.geometry.coordinates%>]
+    const title = "<%= space.title%>"
+    mapboxgl.accessToken = 'pk.eyJ1IjoiYWxleHRoZWhhd2siLCJhIjoiY2w4NWx2aWZjMG10bzNvcDhkczU0bDllciJ9.tFpZ5ATKQEZihL0OAbXRsw';
+    const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v11',
+    center: center,
+    zoom: 10,
+    projection: 'globe'
+    });
+    map.on('style.load', () => {
+    map.setFog(); // Set the default atmosphere style
+    });
+
+    const marker = new mapboxgl.Marker().setLngLat(center).setPopup(new mapboxgl.Popup({offset:15}).setHTML("<h6>"+title +"</h6>").addTo(map))
+    </script>
+<% } %>
 <%- include('partials/footer'); -%>

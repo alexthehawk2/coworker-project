@@ -1,9 +1,12 @@
 const coWorker = require("../models/coworker");
 const path = require("path");
-const cloudinary = require('cloudinary')
+const cloudinary = require("cloudinary");
 const AppError = require("../utils/AppError");
 const { imageUpload } = require("../utils/cloundinaryauth");
 const coworker = require("../models/coworker");
+const geocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+const { response } = require("express");
+const geoClient = geocoding({ accessToken: process.env.ACCESS_TOKEN });
 module.exports.getSpaces = async (req, res) => {
   const spaces = await coWorker.find();
   res.render("spaces", { title: "Coworking Space Locations", spaces });
@@ -16,13 +19,6 @@ module.exports.postSpaces = async (req, res, next) => {
     throw new AppError("Please Provide an image", 400);
   } else {
     try {
-      console.log(
-        req.files.map((f) => ({
-          filename: f.filename,
-          url: f.path,
-        }))
-      );
-      console.log(req.files);
       const space = new coWorker({
         title: req.body.name,
         location: `${req.body.city}, ${req.body.state}`,
@@ -34,17 +30,15 @@ module.exports.postSpaces = async (req, res, next) => {
         filename: f.filename,
         url: f.path,
       }));
-
-      // const responseUrl = await imageUpload(uploadImagePath);
-      // const space = new coWorker({
-      //   title: req.body.name,
-      //   location: `${req.body.city}, ${req.body.state}`,
-      //   image: responseUrl,
-      //   description: req.body.description,
-      //   price: req.body.price,
-      //   spaceOwner: req.user._id,
-      // });
+      const geoJson = await geoClient
+        .forwardGeocode({
+          query: space.location,
+          limit: 1,
+        })
+        .send();
+      space.geometry = geoJson.body.features[0].geometry;
       await space.save();
+      console.log(space);
       req.flash("success", "Successfully created new space");
       res.redirect(`/spaces/${space.id}`);
     } catch (error) {
@@ -82,38 +76,43 @@ module.exports.editSpace = async (req, res, next) => {
     price: req.body.price,
     description: req.body.description,
   };
-  
-    const newSpace = await coWorker.findByIdAndUpdate(req.params.id, space);
-    const newImages = await newSpace.image.concat(
-      req.files.map((f) => ({
-        filename: f.filename,
-        url: f.path,
-      }))
-    );
-    newSpace.image = newImages;
-    await newSpace.save();
-    if (req.body.deleteImages) {
-      for(let filename of req.body.deleteImages){
-        cloudinary.v2.uploader.destroy(filename)
-      }
-      await newSpace.updateOne({
-        $pull: { image: { filename: { $in: req.body.deleteImages } } },
-      });
+  const geoJson = await geoClient
+    .forwardGeocode({
+      query: space.location,
+      limit: 1,
+    })
+    .send();
+  space.geometry = geoJson.body.features[0].geometry;
+  const newSpace = await coWorker.findByIdAndUpdate(req.params.id, space);
+  const newImages = await newSpace.image.concat(
+    req.files.map((f) => ({
+      filename: f.filename,
+      url: f.path,
+    }))
+  );
+  newSpace.image = newImages;
+  await newSpace.save();
+  if (req.body.deleteImages) {
+    for (let filename of req.body.deleteImages) {
+      cloudinary.v2.uploader.destroy(filename);
     }
-    
-  
+    await newSpace.updateOne({
+      $pull: { image: { filename: { $in: req.body.deleteImages } } },
+    });
+  }
+
   req.flash("success", "Edited successfully");
   res.redirect(`/spaces/${req.params.id}`);
 };
 module.exports.deleteSpace = async (req, res) => {
-  const space = await coWorker.findById(req.params.id)
-  const imageDelete = []
-  for(let image of space.image){
-    imageDelete.push(image.filename)
+  const space = await coWorker.findById(req.params.id);
+  const imageDelete = [];
+  for (let image of space.image) {
+    imageDelete.push(image.filename);
   }
 
-  for(let filename of imageDelete){
-    cloudinary.v2.uploader.destroy(filename)
+  for (let filename of imageDelete) {
+    cloudinary.v2.uploader.destroy(filename);
   }
   await coWorker.findByIdAndDelete(req.params.id);
   req.flash("success", "Deleted successfully");

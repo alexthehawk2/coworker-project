@@ -26,18 +26,25 @@ let imgs = getImage(1).then((data) => {
 });
 const seedDb = async (imgArr) => {
   for (let i = 0; i < 10; i++) {
-    const random = Math.floor(Math.random() * 1000);
+    const random = Math.floor(Math.random() * 450);
     const randomDesc = Math.floor(Math.random() * descriptors.length);
     const randomPlace = Math.floor(Math.random() * places.length);
     const randomImg = Math.floor(Math.random() * imgArr.length);
     const price = Math.floor(Math.random() * 20 + 10);
     let db = new coworker({
       title: `${descriptors[randomDesc]} ${places[randomPlace]}`,
-      image: `${imgArr[randomImg]}`,
+      // image: `${imgArr[randomImg]}`,
+      image: [
+        {
+          url: imgArr[randomImg],
+          filename: "NA",
+        },
+      ],
       description:
         "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Veniam sequi vitae amet soluta alias commodi natus eos dignissimos similique, dolorum obcaecati debitis eius voluptate perspiciatis aliquam rerum aliquid",
       price: price,
       location: `${cities[random].city}, ${cities[random].state}`,
+      geometry: cities[random].geometry,
       spaceOwner: process.env.DEFAULT_SPACE_OWNER,
     });
     await db.save();
