@@ -61,7 +61,8 @@ app.use((req, res, next) => {
 });
 
 app.get("/", (req, res) => {
-  res.redirect("/spaces");
+  // res.redirect("/spaces");
+  res.render('home')
 });
 //auth route
 app.use("/", auth);

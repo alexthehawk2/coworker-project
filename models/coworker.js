@@ -46,7 +46,7 @@ const coworkerSchema = new Schema(
 );
 
 coworkerSchema.virtual("properties.popUpHtml").get(function () {
-  return "hello text";
+  return `<a href="/spaces/${this.id}">View Space</a>`;
 });
 
 coworkerSchema.post("findOneAndDelete", async (doc) => {
