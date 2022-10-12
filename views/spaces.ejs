@@ -1,4 +1,9 @@
 <%- include('partials/header'); -%>
+<head>
+  <script src='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css' rel='stylesheet' />    
+</head>
+<div id="map" class="mb-2" style="width: 100%; height:500px"></div>
 <h1>Available Coworking Spaces</h1>
 <% for (let space of spaces){%>
 <div class="card mb-3">
@@ -9,6 +14,7 @@
     <div class="col-md-8">
       <div class="card-body">
         <h5 class="card-title"><%= space.title %></h5>
+        <h5 class="card-title"><%= space.properties.popUpHtml %></h5>
         <p class="card-text"><%= space.description %></p>
         <p class="card-text">
           <small class="text-muted"><%= space.location %></small>
@@ -21,6 +27,11 @@
   </div>
 </div>
 <% } %>
+<script>
+  const spaces = {features : <%-JSON.stringify(spaces) %>}
+</script>
+
 <%- include('partials/toast'); -%>
 <%- include('partials/footer'); -%>
 <script src="/utils/toast.js"></script>
+<script src="/js/clusterMap.js"></script>
