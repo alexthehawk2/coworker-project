@@ -39,7 +39,8 @@
         </main>
 
         <footer class="mt-auto text-white-50">
-            <p>&copy; 2020 </p>
+            <span>&copy; </span>
+            <span id="year"></span>
         </footer>
 
 
@@ -52,5 +53,18 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"
         integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/"
         crossorigin="anonymous"></script>
+        <script>
+            const target = document.getElementById("year");
+            const creationYear = 2022;
+            let currentYear = new Date().getFullYear();
+            let range = `${creationYear !== currentYear
+                    ? creationYear +
+                    "-" +
+                    currentYear[currentYear.length - 2] +
+                    currentYear[currentYear.length - 1]
+                    : creationYear
+                }`;
+            target.textContent = range;
+        </script>
 </body>
 </html>
