@@ -1,6 +1,7 @@
 const express = require("express");
 const coWorker = require("../models/coworker.js");
 const AppError = require("../utils/AppError");
+const cloudinary = require("cloudinary");
 const asyncErrorWrapper = require("../utils/asyncErrorWrapper");
 const { joiCoworkerSchema } = require("../validators/validator");
 const { isLoggedIn, isOwner } = require("../authMiddleware");
@@ -20,6 +21,9 @@ const router = express.Router();
 const spaceValidation = (req, res, next) => {
   const validationResult = joiCoworkerSchema.validate(req.body);
   if (validationResult.error) {
+    try {
+      cloudinary.v2.uploader.destroy(req.files[0].filename);
+    } catch (error) {}
     throw new AppError(`${validationResult.error.details[0].message}`, 400);
   } else {
     next();

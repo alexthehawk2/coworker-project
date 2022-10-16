@@ -2,6 +2,8 @@
 <head>
   <script src='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js'></script>
   <link href='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css' rel='stylesheet' />    
+  <link rel="stylesheet" href="/css/maps.css">
+
 </head>
 
 <!--body  -->
@@ -59,7 +61,7 @@
       </div>
     </div>
     <div class="col-6">
-      <div id='map' class="mb-2" style='width: 100%; height: 300px;'></div>
+      <div id='location-map' class="mb-2"></div>
       <% if(isLoggedIn){%> 
       <h3>Leave A Review</h3>
       <form action="/spaces/<%= space.id %>/reviews" class="needs-validation" method="post" novalidate>
@@ -134,7 +136,7 @@
     const title = "<%= space.title%>"
     mapboxgl.accessToken = 'pk.eyJ1IjoiYWxleHRoZWhhd2siLCJhIjoiY2w4NWx2aWZjMG10bzNvcDhkczU0bDllciJ9.tFpZ5ATKQEZihL0OAbXRsw';
     const map = new mapboxgl.Map({
-    container: 'map',
+    container: 'location-map',
     style: 'mapbox://styles/mapbox/streets-v11',
     center: center,
     zoom: 10,
@@ -143,7 +145,8 @@
     map.on('style.load', () => {
     map.setFog(); // Set the default atmosphere style
     });
-
+    const nav = new mapboxgl.NavigationControl();
+    map.addControl(nav, 'bottom-left');
     const marker = new mapboxgl.Marker().setLngLat(center).setPopup(new mapboxgl.Popup({offset:15}).setHTML("<h6>"+title +"</h6>").addTo(map))
     </script>
 <% } %>

@@ -1,7 +1,7 @@
 mapboxgl.accessToken =
   "pk.eyJ1IjoiYWxleHRoZWhhd2siLCJhIjoiY2w4NWx2aWZjMG10bzNvcDhkczU0bDllciJ9.tFpZ5ATKQEZihL0OAbXRsw";
 const map = new mapboxgl.Map({
-  container: "map",
+  container: "cluster-map",
   // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
   style: "mapbox://styles/mapbox/dark-v10",
   center: [78.9629, 20.5937],
@@ -19,6 +19,8 @@ map.on("load", () => {
     clusterMaxZoom: 14, // Max zoom to cluster points on
     clusterRadius: 50, // Radius of each cluster when clustering points (defaults to 50)
   });
+  const nav = new mapboxgl.NavigationControl();
+  map.addControl(nav, "bottom-left");
 
   map.addLayer({
     id: "clusters",

@@ -7,7 +7,9 @@
       <p>Go back to <a href="/spaces">Homepage</a> or try again</p>
       <!-- code for testing -->
       <!-- <hr /> -->
-      <p class="mb-0"><%= err.stack %></p>
+      <% if (process.env.NODE_ENV !== "production") { %>
+        <p><%= err.stack %></p>
+        <% } %>
     </div>
   </div>
 </div>
