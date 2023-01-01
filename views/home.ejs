@@ -57,13 +57,7 @@
             const target = document.getElementById("year");
             const creationYear = 2022;
             let currentYear = new Date().getFullYear();
-            let range = `${creationYear !== currentYear
-                    ? creationYear +
-                    "-" +
-                    currentYear[currentYear.length - 2] +
-                    currentYear[currentYear.length - 1]
-                    : creationYear
-                }`;
+            let range = `${currentYear !==creationYear ? creationYear + "-" + currentYear : currentYear}`;
             target.textContent = range;
         </script>
 </body>
